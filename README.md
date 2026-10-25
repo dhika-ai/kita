@@ -33,3 +33,13 @@ Buka http://localhost:3000.
 | `SUPABASE_ACCESS_TOKEN` | supabase.com > Account > Access Tokens                                      |
 | `SUPABASE_PROJECT_REF`  | ID proyek, bagian dari URL dashboard `supabase.com/dashboard/project/<ref>` |
 | `SUPABASE_DB_PASSWORD`  | Password database yang dibuat saat proyek dibuat                            |
+
+### Test database
+
+Test aturan akses (RLS) di `supabase/tests/` berjalan di Postgres biasa, dengan tiruan skema `auth` Supabase. Untuk menjalankannya di komputer, perlu Postgres dan `psql`:
+
+```bash
+TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres npm test
+```
+
+Tanpa `TEST_DATABASE_URL`, test database dilewati. Di CI, test ini selalu jalan.
