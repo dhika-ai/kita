@@ -73,7 +73,7 @@ describe("T-01 tabel master data", { skip: skipReason }, () => {
        values ('${familyId}', 'Sabun cuci piring', '${areaId}', 'botol', 2, 1);`,
     );
     assert.equal(
-      db.as(child, "select icon from public.areas;"),
+      db.as(child, `select icon from public.areas where id = '${areaId}';`),
       "kitchen",
       "anak tetap bisa membaca",
     );
@@ -117,7 +117,13 @@ describe("T-01 tabel master data", { skip: skipReason }, () => {
   }
 
   test("keluarga lain tidak melihat dan tidak bisa mengubah master data ini", () => {
-    assert.equal(db.as(outsider, "select count(*) from public.areas;"), "1");
+    assert.equal(
+      db.as(
+        outsider,
+        `select count(*) from public.areas where family_id = '${familyId}';`,
+      ),
+      "0",
+    );
     db.as(
       outsider,
       `update public.areas set name_id = 'Diubah' where id = '${areaId}';`,
