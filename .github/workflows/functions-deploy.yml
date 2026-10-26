@@ -1,0 +1,30 @@
+name: Edge Functions
+
+# Men-deploy Edge Function di supabase/functions ke proyek Supabase setiap ada push ke main.
+# Memakai secret yang sama dengan migrasi: SUPABASE_ACCESS_TOKEN, SUPABASE_PROJECT_REF.
+# verify_jwt tiap fungsi diatur di supabase/config.toml.
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/functions/**", "supabase/config.toml"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+    steps:
+      - name: Stop if secrets are not set yet
+        if: env.SUPABASE_ACCESS_TOKEN == '' || env.SUPABASE_PROJECT_REF == ''
+        run: |
+          echo "::error::Supabase secrets belum diisi di GitHub (Settings > Secrets and variables > Actions)."
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF" --use-api
