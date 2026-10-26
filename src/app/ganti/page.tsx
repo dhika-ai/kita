@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { buttonClass, Field } from "@/components/auth-form";
@@ -88,9 +87,6 @@ export default function SwitchUserPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col gap-4 p-6">
-      <Link href="/" className="text-sm underline">
-        {t.back}
-      </Link>
       <h1 className="text-2xl font-bold">{t.whoIsUsing}</h1>
       <ul className="flex flex-col gap-2">
         {people.map((person) => (

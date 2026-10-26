@@ -39,7 +39,6 @@ const id = {
     "Bagikan link ini ke anggota yang akan masuk dengan akun sendiri.",
   copy: "Salin",
   copied: "Tersalin",
-  back: "Kembali",
   switchUser: "Ganti pengguna",
   whoIsUsing: "Siapa yang memakai?",
   pin: "PIN",
@@ -51,6 +50,8 @@ const id = {
   wrongPin: "PIN salah. Setelah 5 kali salah, PIN terkunci.",
   ownerPassword: "Kata sandi akun",
   enter: "Masuk",
+  home: "Beranda",
+  mainMenu: "Menu utama",
 };
 
 const en: typeof id = {
@@ -93,7 +94,6 @@ const en: typeof id = {
     "Share this link with members who will log in with their own account.",
   copy: "Copy",
   copied: "Copied",
-  back: "Back",
   switchUser: "Switch user",
   whoIsUsing: "Who is using KITA?",
   pin: "PIN",
@@ -105,6 +105,8 @@ const en: typeof id = {
   wrongPin: "Wrong PIN. After 5 wrong tries the PIN is locked.",
   ownerPassword: "Account password",
   enter: "Enter",
+  home: "Home",
+  mainMenu: "Main menu",
 };
 
 export const messages = { id, en };
