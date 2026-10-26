@@ -24,6 +24,7 @@ export type Role = "father" | "mother" | "child" | "art";
 
 export type MyFamily = {
   memberId: string;
+  familyId: string;
   role: Role;
   familyName: string;
   displayName: string;
@@ -57,7 +58,7 @@ async function fetchMember(authUserId: string): Promise<MyFamily | null> {
   }
   const { data, error } = await supabase
     .from("members")
-    .select("id, role, display_name, families(name)")
+    .select("id, family_id, role, display_name, families(name)")
     .eq("auth_user_id", authUserId)
     .maybeSingle();
   if (error) {
@@ -70,6 +71,7 @@ async function fetchMember(authUserId: string): Promise<MyFamily | null> {
   const family = data.families as unknown as { name: string } | null;
   return {
     memberId: data.id,
+    familyId: data.family_id,
     role: data.role,
     familyName: family?.name ?? "",
     displayName: data.display_name,
@@ -84,6 +86,7 @@ async function fetchLocalMember(authUserId: string): Promise<MyFamily | null> {
   const family = await localDb.families.get(member.family_id);
   return {
     memberId: member.id,
+    familyId: member.family_id,
     role: member.role,
     familyName: family?.name ?? "",
     displayName: member.display_name,

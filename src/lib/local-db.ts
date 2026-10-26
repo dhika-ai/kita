@@ -26,12 +26,53 @@ export type LocalMember = {
   deleted_at: string | null;
 };
 
+// Master data (T-03). Nama selalu ada dalam dua bahasa.
+type Synced = {
+  id: string;
+  family_id: string;
+  created_at: string;
+  updated_at?: string;
+  deleted_at: string | null;
+};
+
+export type LocalArea = Synced & {
+  name_en: string;
+  name_id: string;
+  icon: string | null;
+};
+
+export type CategoryKind =
+  | "cleaning"
+  | "laundry"
+  | "maintenance"
+  | "inventory"
+  | "cooking"
+  | "personal_habit";
+
+export type LocalCategory = Synced & {
+  name_en: string;
+  name_id: string;
+  kind: CategoryKind;
+};
+
+export type SopStep = { en: string; id: string; photo_path: string | null };
+
+export type LocalSop = Synced & {
+  title_en: string;
+  title_id: string;
+  steps: SopStep[];
+  photo_path: string | null;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
 export const localDb = new Dexie("kita") as Dexie & {
   families: EntityTable<LocalFamily, "id">;
   members: EntityTable<LocalMember, "id">;
+  areas: EntityTable<LocalArea, "id">;
+  categories: EntityTable<LocalCategory, "id">;
+  sops: EntityTable<LocalSop, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -41,4 +82,10 @@ localDb.version(1).stores({
   members: "id, family_id, created_at",
   outbox: "++seq",
   pullState: "table",
+});
+
+localDb.version(2).stores({
+  areas: "id",
+  categories: "id",
+  sops: "id",
 });
