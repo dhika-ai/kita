@@ -1,3 +1,5 @@
+import { supabase } from "./supabase";
+
 // Foto diperkecil di perangkat sebelum diunggah (sekitar 300 KB) supaya muat di
 // kuota gratis Supabase Storage.
 const maxSide = 1280;
@@ -16,4 +18,14 @@ export async function compressPhoto(file: File): Promise<Blob> {
       0.7,
     ),
   );
+}
+
+/** Perkecil lalu unggah foto ke bucket privat. Mengembalikan path file. Butuh online. */
+export async function uploadPhoto(bucket: string, folder: string, file: File) {
+  const path = `${folder}/${crypto.randomUUID()}.jpg`;
+  const { error } = await supabase.storage
+    .from(bucket)
+    .upload(path, await compressPhoto(file), { contentType: "image/jpeg" });
+  if (error) throw error;
+  return path;
 }

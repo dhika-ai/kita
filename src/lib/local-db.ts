@@ -84,6 +84,27 @@ export type LocalTaskTemplate = Synced & {
   requires_approval: boolean;
 };
 
+export type TaskStatus = "open" | "done" | "approved" | "rejected" | "missed";
+
+export type LocalTaskInstance = Synced & {
+  template_id: string;
+  assignee_id: string | null;
+  assigned_by_id: string | null;
+  due_date: string;
+  status: TaskStatus;
+  approved_by_id: string | null;
+  approved_at: string | null;
+  counts_on: string | null;
+};
+
+export type LocalTaskCompletion = Synced & {
+  instance_id: string;
+  member_id: string;
+  done_at: string;
+  note: string | null;
+  photo_path: string | null;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -94,6 +115,8 @@ export const localDb = new Dexie("kita") as Dexie & {
   categories: EntityTable<LocalCategory, "id">;
   sops: EntityTable<LocalSop, "id">;
   task_templates: EntityTable<LocalTaskTemplate, "id">;
+  task_instances: EntityTable<LocalTaskInstance, "id">;
+  task_completions: EntityTable<LocalTaskCompletion, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -113,4 +136,9 @@ localDb.version(2).stores({
 
 localDb.version(3).stores({
   task_templates: "id",
+});
+
+localDb.version(4).stores({
+  task_instances: "id, due_date",
+  task_completions: "id, instance_id",
 });

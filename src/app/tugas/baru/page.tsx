@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { buttonClass, Field, inputClass } from "@/components/auth-form";
 import { useLanguage, useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
+import { todayWib } from "@/lib/dates";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { localDb, type Recurrence } from "@/lib/local-db";
 import { supabase } from "@/lib/supabase";
@@ -17,9 +18,6 @@ const schedules: (Recurrence | "once")[] = [
   "monthly",
 ];
 const weekdays = [1, 2, 3, 4, 5, 6, 7] as const;
-
-const today = () =>
-  new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Jakarta" });
 
 // T-06: tugas ad-hoc (sekali) atau kebiasaan berulang. Orang tua untuk siapa saja;
 // anak hanya kebiasaan pribadi untuk dirinya sendiri; ART tidak bisa membuat tugas.
@@ -91,7 +89,7 @@ export default function NewTaskPage() {
       recurrence: schedule === "once" ? null : schedule,
       weekdays: schedule === "weekly" ? [...days].sort() : null,
       month_day: schedule === "monthly" ? Number(text("month_day")) : null,
-      due_date: schedule === "once" ? text("due_date") : today(),
+      due_date: schedule === "once" ? text("due_date") : todayWib(),
     });
     setBusy(false);
     if (error) return setError(error.message);
@@ -176,7 +174,7 @@ export default function NewTaskPage() {
             label={t.dueDate}
             name="due_date"
             type="date"
-            defaultValue={today()}
+            defaultValue={todayWib()}
           />
         )}
         {schedule === "weekly" && (

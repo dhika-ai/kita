@@ -13,7 +13,13 @@ const pulledTables = {
   categories: "*",
   sops: "*",
   task_templates: "*",
+  task_instances: "*",
+  task_completions: "*",
 } as const;
+
+// Tabel yang hanya ditambah, tidak pernah diubah: kiriman ulang cukup diabaikan
+// (ON CONFLICT DO NOTHING), jadi tidak butuh izin update.
+const appendOnly = new Set(["task_completions"]);
 
 type PulledTable = keyof typeof pulledTables;
 
@@ -37,7 +43,9 @@ async function push() {
       remove: (seq) => localDb.outbox.delete(seq),
     },
     async ({ table, row }) => {
-      const { error } = await supabase.from(table).upsert(row);
+      const { error } = await supabase
+        .from(table)
+        .upsert(row, { ignoreDuplicates: appendOnly.has(table) });
       if (error) throw error;
     },
   );

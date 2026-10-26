@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LanguageSwitch } from "@/components/language-switch";
+import { TodayTasks } from "@/components/today-tasks";
 import { buttonClass } from "@/components/auth-form";
 import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
@@ -25,7 +26,7 @@ export default function Home() {
   }, [session, t.errorGeneric]);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
       <h1 className="text-4xl font-bold">KITA</h1>
       {session === undefined ? (
         <p>{t.loading}</p>
@@ -57,6 +58,14 @@ export default function Home() {
                 {t.greeting}, {active?.displayName ?? family.displayName} ·{" "}
                 {family.familyName}
               </p>
+              <h2 className="self-start text-xl font-bold">{t.today}</h2>
+              <TodayTasks
+                me={{
+                  id: active?.id ?? family.memberId,
+                  role: active?.role ?? family.role,
+                  familyId: family.familyId,
+                }}
+              />
             </>
           )}
           {!active && (
