@@ -8,7 +8,7 @@ import { pushOutbox, type Row } from "./outbox";
 const pulledTables = {
   families: "id, name, updated_at, deleted_at",
   members:
-    "id, family_id, display_name, role, invite_code, has_pin, pin_locked, is_active, created_at, updated_at, deleted_at",
+    "id, family_id, auth_user_id, display_name, role, invite_code, has_pin, pin_locked, is_active, created_at, updated_at, deleted_at",
 } as const;
 
 type PulledTable = keyof typeof pulledTables;

@@ -14,6 +14,7 @@ export type LocalFamily = {
 export type LocalMember = {
   id: string;
   family_id: string;
+  auth_user_id: string | null;
   display_name: string;
   role: Role;
   invite_code: string | null;
