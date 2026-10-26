@@ -33,7 +33,7 @@ create index members_family_id_idx on public.members (family_id);
 
 -- updated_at selalu diisi server, dipakai sebagai kursor sync (F-10).
 create function public.set_updated_at() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
   new.updated_at = now();
   return new;
@@ -47,7 +47,7 @@ create trigger members_set_updated_at before update on public.members
 
 -- Maksimal anggota aktif per keluarga (default 5), dicek di database.
 create function public.enforce_max_members() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 declare
   limit_count smallint;
   current_count integer;
@@ -69,29 +69,38 @@ $$;
 create trigger members_enforce_max before insert or update of family_id, is_active, deleted_at
   on public.members for each row execute function public.enforce_max_members();
 
+-- Fungsi bantu untuk policy ada di schema private, yang tidak dibuka lewat API Supabase.
+create schema private;
+grant usage on schema private to authenticated;
+
 -- Baris anggota milik pengguna yang sedang login.
 -- security definer supaya bisa dipakai di dalam policy tabel members tanpa rekursi.
-create function public.my_member() returns public.members
+create function private.my_member() returns public.members
 language sql stable security definer set search_path = '' as $$
   select m.* from public.members m
   where m.auth_user_id = auth.uid() and m.deleted_at is null and m.is_active
   limit 1;
 $$;
 
-revoke all on function public.my_member() from public;
-grant execute on function public.my_member() to authenticated;
+revoke all on function private.my_member() from public, anon;
+grant execute on function private.my_member() to authenticated;
 
 alter table public.families enable row level security;
 alter table public.members enable row level security;
 
 create policy "families: anggota bisa lihat keluarganya" on public.families
   for select to authenticated
-  using (id = (public.my_member()).family_id);
+  using (id = (private.my_member()).family_id);
 
 create policy "members: anggota bisa lihat anggota keluarganya" on public.members
   for select to authenticated
-  using (family_id = (public.my_member()).family_id);
+  using (family_id = (private.my_member()).family_id);
 
 -- Hak akses eksplisit. Penulisan data keluarga & anggota lewat fungsi server (F-05, F-06).
-grant select on public.families, public.members to authenticated;
-revoke all on public.families, public.members from anon;
+-- pin_hash dan telegram_chat_id tidak pernah bisa dibaca dari aplikasi.
+revoke all on public.families, public.members from anon, authenticated;
+grant select on public.families to authenticated;
+grant select (
+  id, family_id, auth_user_id, display_name, role, language, is_active,
+  created_at, updated_at, deleted_at
+) on public.members to authenticated;

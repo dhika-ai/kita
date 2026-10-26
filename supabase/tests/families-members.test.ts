@@ -60,12 +60,30 @@ describe("F-04 keluarga dan anggota", { skip: skipReason }, () => {
 
   test("my_member() mengembalikan anggota milik pengguna yang login", () => {
     assert.equal(
-      db.as(userB, "select (public.my_member()).display_name;"),
+      db.as(userB, "select (private.my_member()).display_name;"),
       "Ayah B",
     );
     assert.equal(
-      db.as(userNoFamily, "select (public.my_member()).id is null;"),
+      db.as(userNoFamily, "select (private.my_member()).id is null;"),
       "t",
+    );
+  });
+
+  test("pin_hash dan telegram_chat_id tidak bisa dibaca", () => {
+    assert.throws(
+      () => db.as(userA, "select pin_hash from public.members;"),
+      /permission denied/,
+    );
+    assert.throws(
+      () => db.as(userA, "select telegram_chat_id from public.members;"),
+      /permission denied/,
+    );
+  });
+
+  test("pengunjung tidak bisa memanggil my_member()", () => {
+    assert.throws(
+      () => db.anon("select private.my_member();"),
+      /permission denied/,
     );
   });
 
