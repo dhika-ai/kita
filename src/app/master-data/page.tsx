@@ -6,17 +6,18 @@ import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { NameList } from "./name-list";
 import { SopList } from "./sop-list";
+import { TemplateList } from "./template-list";
 
-const tabs = ["areas", "categories", "sops"] as const;
+const tabs = ["templates", "areas", "categories", "sops"] as const;
 
-// T-03: orang tua mengatur area, kategori, dan SOP. Perubahan disimpan di perangkat
+// T-03 dan T-04: orang tua mengatur template tugas, area, kategori, dan SOP. Perubahan disimpan di perangkat
 // dulu lalu tersinkron (F-10), jadi bisa juga dilakukan saat offline.
 export default function MasterDataPage() {
   const t = useMessages();
   const session = useSession();
   const active = useActiveMember();
   const [me, setMe] = useState<MyFamily | null>();
-  const [tab, setTab] = useState<(typeof tabs)[number]>("areas");
+  const [tab, setTab] = useState<(typeof tabs)[number]>("templates");
 
   useEffect(() => {
     if (!session) return;
@@ -46,7 +47,9 @@ export default function MasterDataPage() {
           </button>
         ))}
       </div>
-      {tab === "sops" ? (
+      {tab === "templates" ? (
+        <TemplateList familyId={me.familyId} />
+      ) : tab === "sops" ? (
         <SopList familyId={me.familyId} />
       ) : (
         <NameList key={tab} table={tab} familyId={me.familyId} />

@@ -12,6 +12,7 @@ const pulledTables = {
   areas: "*",
   categories: "*",
   sops: "*",
+  task_templates: "*",
 } as const;
 
 type PulledTable = keyof typeof pulledTables;
