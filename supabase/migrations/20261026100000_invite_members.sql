@@ -1,9 +1,9 @@
--- F-06: orang tua menambah anggota (maks 5, dijaga trigger dari F-04), mengatur peran,
--- dan membagikan link undangan untuk anggota yang punya akun sendiri.
+-- F-06: ayah (pemilik akun keluarga) menambah anggota (maks 5, dijaga trigger dari F-04),
+-- mengatur peran, dan membagikan link undangan untuk anggota yang punya akun sendiri.
 alter table public.members add column invite_code text unique;
 grant select (invite_code) on public.members to authenticated;
 
--- Benar jika pengguna yang login adalah ayah atau ibu.
+-- Benar jika pengguna yang login adalah ayah atau ibu (dipakai fitur orang tua berikutnya).
 create function private.is_parent()
 returns boolean
 language sql
@@ -26,8 +26,8 @@ as $$
 declare
   new_member_id uuid;
 begin
-  if not private.is_parent() then
-    raise exception 'Hanya ayah atau ibu yang bisa menambah anggota' using errcode = 'insufficient_privilege';
+  if (private.my_member()).role is distinct from 'father' then
+    raise exception 'Hanya ayah yang bisa menambah anggota' using errcode = 'insufficient_privilege';
   end if;
 
   if coalesce(trim(display_name), '') = '' then
@@ -54,8 +54,8 @@ security definer
 set search_path = ''
 as $$
 begin
-  if not private.is_parent() then
-    raise exception 'Hanya ayah atau ibu yang bisa mengatur peran' using errcode = 'insufficient_privilege';
+  if (private.my_member()).role is distinct from 'father' then
+    raise exception 'Hanya ayah yang bisa mengatur peran' using errcode = 'insufficient_privilege';
   end if;
 
   if member_id = (private.my_member()).id then
