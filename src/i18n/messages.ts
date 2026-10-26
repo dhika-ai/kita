@@ -137,6 +137,18 @@ const id = {
   status_approved: "Disetujui",
   status_rejected: "Ditolak",
   status_missed: "Terlewat",
+  approvals: "Persetujuan",
+  approvalsHint:
+    "Tugas yang belum direview tetap menunggu di sini, tidak disetujui otomatis.",
+  nothingToReview: "Tidak ada tugas yang menunggu persetujuan.",
+  approveSelected: "Setujui yang dipilih",
+  approveAll: "Setujui semua",
+  approve: "Setujui",
+  reject: "Tolak",
+  rejectReason: "Alasan penolakan",
+  late: "Terlambat",
+  doneBy: "Dicentang",
+  rejectedBecause: "Ditolak",
 };
 
 const en: typeof id = {
@@ -277,6 +289,18 @@ const en: typeof id = {
   status_approved: "Approved",
   status_rejected: "Rejected",
   status_missed: "Missed",
+  approvals: "Approvals",
+  approvalsHint:
+    "Tasks not reviewed stay here; nothing is approved automatically.",
+  nothingToReview: "No tasks waiting for approval.",
+  approveSelected: "Approve selected",
+  approveAll: "Approve all",
+  approve: "Approve",
+  reject: "Reject",
+  rejectReason: "Reason for rejecting",
+  late: "Late",
+  doneBy: "Ticked",
+  rejectedBecause: "Rejected",
 };
 
 export const messages = { id, en };

@@ -95,6 +95,7 @@ export type LocalTaskInstance = Synced & {
   approved_by_id: string | null;
   approved_at: string | null;
   counts_on: string | null;
+  rejection_reason: string | null;
 };
 
 export type LocalTaskCompletion = Synced & {
