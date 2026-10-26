@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { localDb } from "./local-db";
 import { supabase } from "./supabase";
 
 /** Sesi login saat ini. `undefined` selama masih dicek. */
@@ -50,12 +51,21 @@ export async function loadMyFamily(user: User): Promise<MyFamily | null> {
 }
 
 async function fetchMember(authUserId: string): Promise<MyFamily | null> {
+  if (!navigator.onLine) {
+    const local = await fetchLocalMember(authUserId);
+    if (local) return local;
+  }
   const { data, error } = await supabase
     .from("members")
     .select("id, role, display_name, families(name)")
     .eq("auth_user_id", authUserId)
     .maybeSingle();
-  if (error) throw error;
+  if (error) {
+    // Offline: pakai salinan di perangkat (F-10) kalau sudah pernah ditarik.
+    const local = await fetchLocalMember(authUserId);
+    if (local) return local;
+    throw error;
+  }
   if (!data) return null;
   const family = data.families as unknown as { name: string } | null;
   return {
@@ -63,5 +73,19 @@ async function fetchMember(authUserId: string): Promise<MyFamily | null> {
     role: data.role,
     familyName: family?.name ?? "",
     displayName: data.display_name,
+  };
+}
+
+async function fetchLocalMember(authUserId: string): Promise<MyFamily | null> {
+  const member = (await localDb.members.toArray()).find(
+    (m) => m.auth_user_id === authUserId && !m.deleted_at,
+  );
+  if (!member) return null;
+  const family = await localDb.families.get(member.family_id);
+  return {
+    memberId: member.id,
+    role: member.role,
+    familyName: family?.name ?? "",
+    displayName: member.display_name,
   };
 }
