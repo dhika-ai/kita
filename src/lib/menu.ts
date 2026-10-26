@@ -20,6 +20,12 @@ const menu: MenuItem[] = [
     icon: "M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z",
   },
   {
+    href: "/tugas/baru",
+    label: "newTask",
+    roles: ["father", "mother", "child"],
+    icon: "M12 5v14M5 12h14",
+  },
+  {
     href: "/keluarga",
     label: "familyMembers",
     roles: parents,
