@@ -22,6 +22,24 @@ const id = {
   noFamily: "Akun ini belum terhubung ke keluarga.",
   errorGeneric: "Terjadi kesalahan. Coba lagi.",
   errorLogin: "Email atau kata sandi salah, atau email belum dikonfirmasi.",
+  joinTitle: "Gabung ke keluarga",
+  joinIntro: "Kamu diundang bergabung ke KITA. Buat akun untuk masuk.",
+  familyMembers: "Anggota keluarga",
+  addMember: "Tambah anggota",
+  memberName: "Nama",
+  role: "Peran",
+  role_father: "Ayah",
+  role_mother: "Ibu",
+  role_child: "Anak",
+  role_art: "ART",
+  you: "kamu",
+  maxMembers: "Maksimal 5 anggota per keluarga.",
+  inviteLink: "Link undangan",
+  inviteHint:
+    "Bagikan link ini ke anggota yang akan masuk dengan akun sendiri.",
+  copy: "Salin",
+  copied: "Tersalin",
+  back: "Kembali",
 };
 
 const en: typeof id = {
@@ -47,6 +65,24 @@ const en: typeof id = {
   noFamily: "This account is not linked to a family yet.",
   errorGeneric: "Something went wrong. Please try again.",
   errorLogin: "Wrong email or password, or the email is not confirmed yet.",
+  joinTitle: "Join a family",
+  joinIntro: "You have been invited to KITA. Create an account to join.",
+  familyMembers: "Family members",
+  addMember: "Add member",
+  memberName: "Name",
+  role: "Role",
+  role_father: "Father",
+  role_mother: "Mother",
+  role_child: "Child",
+  role_art: "Helper",
+  you: "you",
+  maxMembers: "Up to 5 members per family.",
+  inviteLink: "Invite link",
+  inviteHint:
+    "Share this link with members who will log in with their own account.",
+  copy: "Copy",
+  copied: "Copied",
+  back: "Back",
 };
 
 export const messages = { id, en };
