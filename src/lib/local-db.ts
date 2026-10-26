@@ -21,6 +21,8 @@ export type LocalMember = {
   has_pin: boolean;
   pin_locked: boolean;
   telegram_connected?: boolean;
+  telegram_mute_morning?: boolean;
+  telegram_mute_evening?: boolean;
   is_active: boolean;
   created_at: string;
   updated_at: string;
