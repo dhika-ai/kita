@@ -106,6 +106,15 @@ export type LocalTaskCompletion = Synced & {
   photo_path: string | null;
 };
 
+export type LocalInventoryItem = Synced & {
+  name: string;
+  area_id: string | null;
+  unit: string;
+  qty_on_hand: number;
+  min_qty: number;
+  restock_task_template_id: string | null;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -118,6 +127,7 @@ export const localDb = new Dexie("kita") as Dexie & {
   task_templates: EntityTable<LocalTaskTemplate, "id">;
   task_instances: EntityTable<LocalTaskInstance, "id">;
   task_completions: EntityTable<LocalTaskCompletion, "id">;
+  inventory_items: EntityTable<LocalInventoryItem, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -142,4 +152,8 @@ localDb.version(3).stores({
 localDb.version(4).stores({
   task_instances: "id, due_date",
   task_completions: "id, instance_id",
+});
+
+localDb.version(5).stores({
+  inventory_items: "id",
 });

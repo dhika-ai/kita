@@ -161,6 +161,16 @@ const id = {
   scheduled: "Terjadwal",
   assignedBy: "dari",
   noTasksInRange: "Tidak ada tugas.",
+  inventory: "Inventaris",
+  inventoryHint:
+    "Jika stok di bawah batas minimum, tugas belanja dibuat otomatis (satu tugas sampai selesai).",
+  itemName: "Nama barang",
+  unit: "Satuan (botol, kg, ...)",
+  qtyOnHand: "Stok",
+  minQty: "Batas minimum",
+  lowStock: "Stok rendah",
+  addOne: "Tambah satu",
+  useOne: "Pakai satu",
 };
 
 const en: typeof id = {
@@ -325,6 +335,16 @@ const en: typeof id = {
   scheduled: "Scheduled",
   assignedBy: "from",
   noTasksInRange: "No tasks.",
+  inventory: "Inventory",
+  inventoryHint:
+    "When stock drops below the minimum, a shopping task is created automatically (one task until it is done).",
+  itemName: "Item name",
+  unit: "Unit (bottle, kg, ...)",
+  qtyOnHand: "Stock",
+  minQty: "Minimum",
+  lowStock: "Low stock",
+  addOne: "Add one",
+  useOne: "Use one",
 };
 
 export const messages = { id, en };
