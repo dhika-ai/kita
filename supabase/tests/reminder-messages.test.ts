@@ -122,3 +122,31 @@ describe("R-03 isi pesan pengingat", { skip: skipReason }, () => {
     );
   });
 });
+
+describe("R-04 rahasia jadwal pengingat", { skip: skipReason }, () => {
+  let db: ReturnType<typeof createTestDb>;
+  before(() => {
+    db = createTestDb();
+    // Tiruan Vault Supabase secukupnya.
+    db.admin(`
+      create schema vault;
+      create table vault.decrypted_secrets (name text, decrypted_secret text);
+      insert into vault.decrypted_secrets values ('kita_cron_secret', 'rahasia');`);
+  });
+  after(() => db?.drop());
+
+  test("hanya rahasia yang benar yang diterima, dan hanya service_role yang bisa memeriksa", () => {
+    const check = (secret: string) =>
+      db.admin(`begin; set local role service_role;
+        select public.check_cron_secret('${secret}'); commit;`);
+    assert.equal(check("rahasia"), "t");
+    assert.equal(check("tebakan"), "f");
+    assert.equal(check(""), "f");
+    assert.throws(() =>
+      db.as(
+        "00000000-0000-0000-0000-0000000000b9",
+        "select public.check_cron_secret('rahasia');",
+      ),
+    );
+  });
+});

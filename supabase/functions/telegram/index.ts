@@ -10,34 +10,9 @@ import {
   webhookSecret,
   type TelegramUpdate,
 } from "./bot.ts";
+import { botToken as token, rpc, telegram } from "../_shared/api.ts";
 
-const token = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "";
 const functionUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/telegram`;
-
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-
-async function rpc(name: string, args: unknown) {
-  const res = await fetch(`${supabaseUrl}/rest/v1/rpc/${name}`, {
-    method: "POST",
-    headers: {
-      apikey: serviceKey,
-      authorization: `Bearer ${serviceKey}`,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(args),
-  });
-  if (!res.ok) throw new Error(`${name}: ${res.status} ${await res.text()}`);
-  return res.json();
-}
-
-function telegram(method: string, body: unknown) {
-  return fetch(`https://api.telegram.org/bot${token}/${method}`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
-  });
-}
 
 Deno.serve(async (req) => {
   if (!token)

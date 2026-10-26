@@ -417,3 +417,7 @@ enabled = true
 # R-01: Telegram tidak mengirim JWT Supabase; fungsi memeriksa rahasia webhook sendiri.
 [functions.telegram]
 verify_jwt = false
+
+# R-04: dipanggil pg_cron; fungsi memeriksa rahasia x-kita-cron dari Vault.
+[functions.reminders]
+verify_jwt = false
