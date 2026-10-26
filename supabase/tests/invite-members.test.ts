@@ -54,20 +54,33 @@ describe("F-06 undang anggota dan atur peran", { skip: skipReason }, () => {
     );
   });
 
-  test("ibu juga bisa mengatur peran, tapi tidak perannya sendiri", () => {
+  test("ayah mengatur peran, tapi tidak perannya sendiri", () => {
     const artId = db.as(
-      mother,
+      father,
       "select public.add_member('Mbak Tini', 'child');",
     );
-    db.as(mother, `select public.set_member_role('${artId}', 'art');`);
+    db.as(father, `select public.set_member_role('${artId}', 'art');`);
     assert.equal(
-      db.as(mother, `select role from public.members where id = '${artId}';`),
+      db.as(father, `select role from public.members where id = '${artId}';`),
       "art",
+    );
+    const fatherId = db.as(father, "select (private.my_member()).id;");
+    assert.throws(
+      () =>
+        db.as(father, `select public.set_member_role('${fatherId}', 'child');`),
+      /peran sendiri/,
+    );
+  });
+
+  test("ibu tidak bisa menambah anggota atau mengatur peran", () => {
+    assert.throws(
+      () => db.as(mother, "select public.add_member('Teman', 'child');"),
+      /Hanya ayah/,
     );
     assert.throws(
       () =>
         db.as(mother, `select public.set_member_role('${motherId}', 'child');`),
-      /peran sendiri/,
+      /Hanya ayah/,
     );
   });
 
@@ -75,12 +88,12 @@ describe("F-06 undang anggota dan atur peran", { skip: skipReason }, () => {
     db.as(child, `select public.join_family('${inviteCode("Andi")}');`);
     assert.throws(
       () => db.as(child, "select public.add_member('Teman', 'child');"),
-      /Hanya ayah atau ibu/,
+      /Hanya ayah/,
     );
     assert.throws(
       () =>
         db.as(child, `select public.set_member_role('${motherId}', 'child');`),
-      /Hanya ayah atau ibu/,
+      /Hanya ayah/,
     );
   });
 

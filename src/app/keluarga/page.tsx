@@ -32,6 +32,8 @@ export default function FamilyPage() {
   const myRole = active?.role ?? me?.role;
   const myId = active?.id ?? me?.memberId;
   const isParent = myRole === "father" || myRole === "mother";
+  // Hanya ayah (pemilik akun keluarga) yang menambah anggota dan mengatur peran.
+  const isFather = myRole === "father";
 
   const load = useCallback(
     () =>
@@ -105,7 +107,7 @@ export default function FamilyPage() {
                 {member.display_name}
                 {member.id === myId && ` (${t.you})`}
               </span>
-              {isParent && member.id !== myId ? (
+              {isFather && member.id !== myId ? (
                 <select
                   aria-label={`${t.role} ${member.display_name}`}
                   value={member.role}
@@ -143,7 +145,7 @@ export default function FamilyPage() {
                 }
               />
             )}
-            {isParent && member.invite_code && (
+            {isFather && member.invite_code && (
               <InviteLink code={member.invite_code} />
             )}
           </li>
@@ -156,7 +158,7 @@ export default function FamilyPage() {
         </p>
       )}
 
-      {isParent && members.length < 5 && (
+      {isFather && members.length < 5 && (
         <form
           onSubmit={add}
           className="flex flex-col gap-3 rounded-md border p-3"
