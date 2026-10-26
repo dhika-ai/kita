@@ -149,6 +149,18 @@ const id = {
   late: "Terlambat",
   doneBy: "Dicentang",
   rejectedBecause: "Ditolak",
+  calendar: "Kalender",
+  view_day: "Harian",
+  view_week: "Mingguan",
+  view_month: "Bulanan",
+  previous: "Sebelumnya",
+  next: "Berikutnya",
+  goToday: "Hari ini",
+  allMembers: "Semua anggota",
+  allAreas: "Semua area",
+  scheduled: "Terjadwal",
+  assignedBy: "dari",
+  noTasksInRange: "Tidak ada tugas.",
 };
 
 const en: typeof id = {
@@ -301,6 +313,18 @@ const en: typeof id = {
   late: "Late",
   doneBy: "Ticked",
   rejectedBecause: "Rejected",
+  calendar: "Calendar",
+  view_day: "Daily",
+  view_week: "Weekly",
+  view_month: "Monthly",
+  previous: "Previous",
+  next: "Next",
+  goToday: "Today",
+  allMembers: "All members",
+  allAreas: "All areas",
+  scheduled: "Scheduled",
+  assignedBy: "from",
+  noTasksInRange: "No tasks.",
 };
 
 export const messages = { id, en };
