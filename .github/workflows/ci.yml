@@ -18,6 +18,9 @@ jobs:
           --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      # Nilai publik (boleh terlihat di browser), dibutuhkan agar build berhasil.
+      NEXT_PUBLIC_SUPABASE_URL: https://axzonebitdvdvidasjir.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_fFtBRGrUM7eGme3h5O9WRw_gW5hogWk
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

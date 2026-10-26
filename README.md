@@ -34,6 +34,15 @@ Buka http://localhost:3000.
 | `SUPABASE_PROJECT_REF`  | ID proyek, bagian dari URL dashboard `supabase.com/dashboard/project/<ref>` |
 | `SUPABASE_DB_PASSWORD`  | Password database yang dibuat saat proyek dibuat                            |
 
+### Menjalankan aplikasi dengan login
+
+Buat file `.env.local` (tidak ikut di-commit) berisi alamat dan kunci publik Supabase. Nilainya sama dengan yang ada di `.github/workflows/ci.yml`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://axzonebitdvdvidasjir.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
 ### Test database
 
 Test aturan akses (RLS) di `supabase/tests/` berjalan di Postgres biasa, dengan tiruan skema `auth` Supabase. Untuk menjalankannya di komputer, perlu Postgres dan `psql`:
