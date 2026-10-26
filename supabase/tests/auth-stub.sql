@@ -1,6 +1,7 @@
 -- Tiruan minimal skema auth Supabase, HANYA untuk test di Postgres biasa.
 -- Di Supabase asli semua ini sudah ada.
-create extension if not exists pgcrypto;
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
 do $$ begin
   create role anon nologin;
 exception when duplicate_object then null; end $$;

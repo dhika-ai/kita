@@ -5,12 +5,15 @@ import { useEffect, useState } from "react";
 import { LanguageSwitch } from "@/components/language-switch";
 import { buttonClass } from "@/components/auth-form";
 import { useMessages } from "@/i18n/language";
+import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
 export default function Home() {
   const t = useMessages();
   const session = useSession();
+  // Anak atau ART yang masuk dengan PIN di perangkat ini (F-07).
+  const active = useActiveMember();
   const [family, setFamily] = useState<MyFamily | null | undefined>();
   const [error, setError] = useState("");
 
@@ -51,23 +54,29 @@ export default function Home() {
           ) : (
             <>
               <p className="text-lg">
-                {t.greeting}, {family.displayName} · {family.familyName}
+                {t.greeting}, {active?.displayName ?? family.displayName} ·{" "}
+                {family.familyName}
               </p>
               <Link href="/keluarga" className="underline">
                 {t.familyMembers}
               </Link>
+              <Link href="/ganti" className="underline">
+                {t.switchUser}
+              </Link>
             </>
           )}
-          <button
-            type="button"
-            onClick={() => {
-              setFamily(undefined);
-              supabase.auth.signOut();
-            }}
-            className="rounded-md border px-4 py-2"
-          >
-            {t.logout}
-          </button>
+          {!active && (
+            <button
+              type="button"
+              onClick={() => {
+                setFamily(undefined);
+                supabase.auth.signOut();
+              }}
+              className="rounded-md border px-4 py-2"
+            >
+              {t.logout}
+            </button>
+          )}
         </>
       )}
       <LanguageSwitch />
