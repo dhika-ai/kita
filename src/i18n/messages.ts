@@ -262,6 +262,19 @@ const id = {
   request_rejected: "Ditolak",
   trendTitle: "Tren 14 hari terakhir (% tugas disetujui)",
   latestBadges: "Lencana terbaru",
+  finance: "Keuangan",
+  financeAccounts: "Rekening",
+  budgetPosts: "Pos anggaran",
+  name: "Nama",
+  account_cash: "Tunai",
+  account_bank: "Bank",
+  account_ewallet: "E-wallet",
+  tx_expense: "Pengeluaran",
+  tx_income: "Pemasukan",
+  monthlyBudget: "Anggaran per bulan (Rp)",
+  monthlyBudgetHint: "Kosongkan kalau pos ini tidak dibatasi anggaran.",
+  perMonth: "/bulan",
+  invalidAmount: "Nominal harus angka bulat Rupiah, misalnya 150000.",
 };
 
 const en: typeof id = {
@@ -528,6 +541,19 @@ const en: typeof id = {
   request_rejected: "Rejected",
   trendTitle: "Last 14 days (% tasks approved)",
   latestBadges: "Latest badges",
+  finance: "Finance",
+  financeAccounts: "Accounts",
+  budgetPosts: "Budget posts",
+  name: "Name",
+  account_cash: "Cash",
+  account_bank: "Bank",
+  account_ewallet: "E-wallet",
+  tx_expense: "Expense",
+  tx_income: "Income",
+  monthlyBudget: "Monthly budget (Rp)",
+  monthlyBudgetHint: "Leave empty if this post has no budget limit.",
+  perMonth: "/month",
+  invalidAmount: "Amount must be a whole Rupiah number, e.g. 150000.",
 };
 
 export const messages = { id, en };

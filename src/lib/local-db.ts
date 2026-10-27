@@ -141,6 +141,29 @@ export type LocalDailyMessage = Synced & {
   photo_path: string | null;
 };
 
+// Keuangan (K-01): hanya disalin ke perangkat ayah/ibu. Nominal dalam Rupiah (bilangan bulat).
+export type LocalAccount = Synced & {
+  name: string;
+  kind: "cash" | "bank" | "ewallet";
+};
+
+export type LocalBudgetPost = Synced & {
+  name: string;
+  kind: "income" | "expense";
+  monthly_budget: number | null;
+};
+
+export type LocalTransaction = Synced & {
+  kind: "income" | "expense";
+  amount: number;
+  post_id: string;
+  account_id: string;
+  tx_date: string;
+  note: string | null;
+  receipt_path: string | null;
+  created_by: string;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -157,6 +180,9 @@ export const localDb = new Dexie("kita") as Dexie & {
   moments: EntityTable<LocalMoment, "id">;
   moment_picks: EntityTable<LocalMomentPick, "id">;
   daily_messages: EntityTable<LocalDailyMessage, "id">;
+  accounts: EntityTable<LocalAccount, "id">;
+  budget_posts: EntityTable<LocalBudgetPost, "id">;
+  transactions: EntityTable<LocalTransaction, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -197,4 +223,10 @@ localDb.version(7).stores({
 
 localDb.version(8).stores({
   daily_messages: "id, message_date",
+});
+
+localDb.version(9).stores({
+  accounts: "id",
+  budget_posts: "id",
+  transactions: "id, tx_date",
 });
