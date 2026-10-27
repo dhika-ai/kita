@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex flex-1 flex-col md:flex-row">
       <nav
         aria-label={t.mainMenu}
-        className="fixed inset-x-0 bottom-0 z-10 flex print:hidden overflow-x-auto border-t bg-background pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-dvh md:w-56 md:flex-col md:gap-1 md:border-t-0 md:border-r md:p-3"
+        className="fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t bg-background pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-dvh md:w-56 md:flex-col md:gap-1 md:border-t-0 md:border-r md:p-3"
       >
         <span className="hidden px-3 py-2 text-xl font-bold md:block">
           KITA

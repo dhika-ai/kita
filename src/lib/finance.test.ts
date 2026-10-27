@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { financeCsv, monthSummary } from "./finance.ts";
+import { monthSummary } from "./finance.ts";
 
 const post = (
   id: string,
@@ -61,37 +61,4 @@ test("tepat sama dengan anggaran belum dianggap melebihi", () => {
     "2026-11",
   );
   assert.equal(s.rows.find((r) => r.post.id === "listrik")?.over, false);
-});
-
-test("CSV berisi transaksi bulan itu, total per pos, dan selisih", () => {
-  const csv = financeCsv(
-    [
-      {
-        ...tx("dapur", "expense", 1100000, "2026-11-20"),
-        account_id: "a1",
-        note: "Pasar, sayur",
-      },
-      {
-        ...tx("gaji", "income", 8000000, "2026-11-01"),
-        account_id: "a1",
-        note: null,
-      },
-      tx("dapur", "expense", 5, "2026-10-01"),
-    ],
-    posts,
-    [{ id: "a1", name: "BCA" }],
-    "2026-11",
-  );
-  const lines = csv.trim().split("\n");
-  assert.deepEqual(lines.slice(0, 3), [
-    "date,type,post,account,note,amount",
-    "2026-11-01,income,gaji,BCA,,8000000",
-    '2026-11-20,expense,dapur,BCA,"Pasar, sayur",-1100000',
-  ]);
-  assert.ok(lines.includes("dapur,expense,1100000,1000000,yes"));
-  assert.deepEqual(lines.slice(-3), [
-    "income,8000000",
-    "expense,1100000",
-    "net,6900000",
-  ]);
 });

@@ -34,7 +34,7 @@ export function MonthNav({
         type="button"
         aria-label={t.previous}
         onClick={() => onChange(shiftMonth(month, -1))}
-        className="rounded-md border px-3 py-1 print:invisible"
+        className="rounded-md border px-3 py-1"
       >
         ‹
       </button>
@@ -43,7 +43,7 @@ export function MonthNav({
         type="button"
         aria-label={t.next}
         onClick={() => onChange(shiftMonth(month, 1))}
-        className="rounded-md border px-3 py-1 print:invisible"
+        className="rounded-md border px-3 py-1"
       >
         ›
       </button>
