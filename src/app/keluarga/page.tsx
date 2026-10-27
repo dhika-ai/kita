@@ -1,23 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { liveQuery } from "dexie";
+import { useEffect, useState } from "react";
 import { buttonClass, Field, inputClass } from "@/components/auth-form";
 import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily, type Role } from "@/lib/auth";
+import { localDb, type LocalMember } from "@/lib/local-db";
 import { supabase } from "@/lib/supabase";
+import { sync } from "@/lib/sync/sync";
 
 const roles: Role[] = ["father", "mother", "child", "art"];
 
-type Member = {
-  id: string;
-  display_name: string;
-  role: Role;
-  invite_code: string | null;
-  has_pin: boolean;
-  pin_locked: boolean;
-};
+type Member = LocalMember;
 
 export default function FamilyPage() {
   const t = useMessages();
@@ -35,32 +31,27 @@ export default function FamilyPage() {
   // Hanya ayah (pemilik akun keluarga) yang menambah anggota dan mengatur peran.
   const isFather = myRole === "father";
 
-  const load = useCallback(
-    () =>
-      supabase
-        .from("members")
-        .select("id, display_name, role, invite_code, has_pin, pin_locked")
-        .is("deleted_at", null)
-        .order("created_at")
-        .then(({ data, error }) => {
-          if (error) setError(error.message);
-          else setMembers(data);
-        }),
-    [],
-  );
+  // Daftar anggota dibaca dari salinan di perangkat (F-10), jadi tetap tampil saat offline.
+  useEffect(() => {
+    const subscription = liveQuery(() =>
+      localDb.members.orderBy("created_at").toArray(),
+    ).subscribe((rows) =>
+      setMembers(rows.filter((member) => !member.deleted_at)),
+    );
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!session) return;
     loadMyFamily(session.user).then(setMe, (e) => setError(e.message));
-    load();
-  }, [session, load]);
+  }, [session]);
 
   async function run(call: PromiseLike<{ error: { message: string } | null }>) {
     setBusy(true);
     setError("");
     const { error } = await call;
     if (error) setError(error.message);
-    await load();
+    await sync();
     setBusy(false);
     return !error;
   }
