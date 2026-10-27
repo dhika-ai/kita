@@ -7,6 +7,7 @@ import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { localDb } from "@/lib/local-db";
 import { supabase } from "@/lib/supabase";
+import { sync } from "@/lib/sync/sync";
 import { useLiveQuery } from "@/lib/use-live-query";
 
 // Username bot (tanpa @), nilai publik. Tanpa ini hanya kode yang ditampilkan.
@@ -15,6 +16,7 @@ const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME;
 // R-02: anggota yang sedang memakai aplikasi menghubungkan Telegram-nya dengan kode
 // sekali pakai. Status terhubung ikut tersalin dari server (sync), jadi langsung
 // berubah setelah bot menerima kodenya.
+// R-05: pengingat pagi dan sore bisa dimatikan masing-masing.
 export default function TelegramPage() {
   const t = useMessages();
   const language = useLanguage();
@@ -36,6 +38,20 @@ export default function TelegramPage() {
     [memberId],
   );
 
+  async function setMuted(slot: "morning" | "evening", muted: boolean) {
+    if (!navigator.onLine) return setError(t.needsOnline);
+    setBusy(true);
+    setError("");
+    const { error } = await supabase.rpc("set_telegram_mute", {
+      member_id: memberId,
+      slot,
+      muted,
+    });
+    if (error) setError(error.message);
+    await sync();
+    setBusy(false);
+  }
+
   async function connect() {
     if (!navigator.onLine) return setError(t.needsOnline);
     setBusy(true);
@@ -56,7 +72,20 @@ export default function TelegramPage() {
       <h1 className="text-2xl font-bold">{t.telegram}</h1>
       <p className="text-sm opacity-70">{t.telegramHint}</p>
       {member?.telegram_connected && (
-        <p className="rounded-md border p-3">{t.telegramConnected}</p>
+        <div className="flex flex-col gap-2 rounded-md border p-3">
+          <p>{t.telegramConnected}</p>
+          {(["morning", "evening"] as const).map((slot) => (
+            <label key={slot} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={!member[`telegram_mute_${slot}`]}
+                disabled={busy}
+                onChange={(event) => setMuted(slot, !event.target.checked)}
+              />
+              {slot === "morning" ? t.reminderMorning : t.reminderEvening}
+            </label>
+          ))}
+        </div>
       )}
       <button
         type="button"

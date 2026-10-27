@@ -188,6 +188,8 @@ const id = {
   connectTelegram: "Hubungkan Telegram",
   openTelegram: "Buka Telegram",
   telegramCodeHint: "Atau kirim pesan ini ke bot KITA (berlaku 15 menit):",
+  reminderMorning: "Pengingat pagi (07:00)",
+  reminderEvening: "Pengingat sore (17:00)",
 };
 
 const en: typeof id = {
@@ -379,6 +381,8 @@ const en: typeof id = {
   openTelegram: "Open Telegram",
   telegramCodeHint:
     "Or send this message to the KITA bot (valid for 15 minutes):",
+  reminderMorning: "Morning reminder (07:00)",
+  reminderEvening: "Afternoon reminder (17:00)",
 };
 
 export const messages = { id, en };
