@@ -26,6 +26,12 @@ const menu: MenuItem[] = [
     icon: "M4 20V10m6 10V4m6 16v-7m4 7H2",
   },
   {
+    href: "/poin",
+    label: "pointsPage",
+    roles: everyone,
+    icon: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z",
+  },
+  {
     href: "/laporan",
     label: "report",
     roles: everyone,

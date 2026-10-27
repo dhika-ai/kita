@@ -35,6 +35,8 @@ export default function ApprovalsPage() {
   const active = useActiveMember();
   const [me, setMe] = useState<MyFamily | null>();
   const [selected, setSelected] = useState<string[]>([]);
+  // G-01: cek acak. Poin sudah masuk saat dicentang; orang tua cukup mengecek beberapa.
+  const [sample, setSample] = useState<string[]>();
   const [rejecting, setRejecting] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -91,13 +93,32 @@ export default function ApprovalsPage() {
     setBusy(false);
   }
 
-  const pending = data?.pending ?? [];
+  const allPending = data?.pending ?? [];
+  const pending = sample
+    ? allPending.filter((i) => sample.includes(i.id))
+    : allPending;
+  const pickSample = () =>
+    setSample(
+      [...allPending]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map((i) => i.id),
+    );
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-6">
       <h1 className="text-2xl font-bold">{t.approvals}</h1>
       <p className="text-sm opacity-70">{t.approvalsHint}</p>
-      {data && pending.length === 0 && <p>{t.nothingToReview}</p>}
+      {data && allPending.length === 0 && <p>{t.nothingToReview}</p>}
+      {allPending.length > 3 && (
+        <button
+          type="button"
+          onClick={() => (sample ? setSample(undefined) : pickSample())}
+          className="w-fit rounded-md border px-4 py-2"
+        >
+          {sample ? t.showAll : t.randomCheck}
+        </button>
+      )}
       {pending.length > 0 && (
         <div className="flex flex-wrap gap-2">
           <button
