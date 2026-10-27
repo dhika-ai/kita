@@ -114,6 +114,16 @@ const id = {
   points: "Poin",
   requiresApproval: "Perlu disetujui orang tua",
   pickWeekday: "Pilih minimal satu hari.",
+  newTask: "Tambah tugas",
+  title: "Judul",
+  titleEnOptional: "Judul (Inggris, boleh kosong)",
+  once: "Sekali",
+  dueDate: "Tanggal",
+  taskCreated: "Tugas tersimpan.",
+  habitCreated: "Kebiasaan tersimpan. Mulai muncul besok.",
+  needsOnline: "Butuh koneksi internet.",
+  childHabitHint: "Anak bisa membuat kebiasaan pribadi untuk dirinya sendiri.",
+  cannotCreateTask: "ART tidak bisa membuat tugas.",
 };
 
 const en: typeof id = {
@@ -231,6 +241,16 @@ const en: typeof id = {
   points: "Points",
   requiresApproval: "Needs parent approval",
   pickWeekday: "Pick at least one day.",
+  newTask: "New task",
+  title: "Title",
+  titleEnOptional: "Title (English, optional)",
+  once: "Once",
+  dueDate: "Date",
+  taskCreated: "Task saved.",
+  habitCreated: "Habit saved. It starts showing tomorrow.",
+  needsOnline: "Needs an internet connection.",
+  childHabitHint: "Children can create personal habits for themselves.",
+  cannotCreateTask: "Helpers cannot create tasks.",
 };
 
 export const messages = { id, en };
