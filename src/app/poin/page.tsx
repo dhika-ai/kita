@@ -5,7 +5,9 @@ import { buttonClass, inputClass } from "@/components/auth-form";
 import { useLanguage, useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
+import { todayWib } from "@/lib/dates";
 import { localDb } from "@/lib/local-db";
+import { periods, progressOf, type Targets } from "@/lib/progress";
 import { supabase } from "@/lib/supabase";
 import { useLiveQuery } from "@/lib/use-live-query";
 
@@ -18,8 +20,11 @@ type Entry = {
   created_at: string;
 };
 
-// G-01: saldo dan riwayat poin dari point_ledger. Ayah/Ibu melihat semua anggota dan
-// bisa mengoreksi poin; anak dan ART melihat miliknya sendiri. Butuh internet.
+type Target = Targets & { member_id: string };
+
+// G-01: saldo dan riwayat poin dari point_ledger. G-02: Progress Pribadi terhadap target
+// harian/mingguan/bulanan. Ayah/Ibu melihat semua anggota, bisa mengoreksi poin dan
+// memasang target; anak dan ART melihat miliknya sendiri. Butuh internet.
 export default function PointsPage() {
   const t = useMessages();
   const language = useLanguage();
@@ -29,6 +34,8 @@ export default function PointsPage() {
   const [entries, setEntries] = useState<Entry[]>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [targets, setTargets] = useState<Target[]>([]);
+  const [targetFor, setTargetFor] = useState<string>();
 
   useEffect(() => {
     if (!session) return;
@@ -46,16 +53,21 @@ export default function PointsPage() {
   const [version, setVersion] = useState(0);
   useEffect(() => {
     if (!session) return;
-    const request = navigator.onLine
-      ? supabase
+    void (async () => {
+      if (!navigator.onLine) return setError(t.needsOnline);
+      const [ledger, goals] = await Promise.all([
+        supabase
           .from("point_ledger")
           .select("id, member_id, points, kind, note, created_at")
-          .order("created_at", { ascending: false })
-      : Promise.resolve({ data: null, error: { message: t.needsOnline } });
-    request.then(({ data, error }) => {
-      setError(error?.message ?? "");
-      setEntries((data as Entry[] | null) ?? undefined);
-    });
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("point_targets")
+          .select("member_id, daily, weekly, monthly"),
+      ]);
+      setError(ledger.error?.message ?? goals.error?.message ?? "");
+      setEntries((ledger.data as Entry[] | null) ?? undefined);
+      setTargets(goals.data ?? []);
+    })();
   }, [session, version, t]);
 
   const role = active?.role ?? me?.role;
@@ -70,6 +82,27 @@ export default function PointsPage() {
   );
   const name = (id: string) =>
     members?.find((m) => m.id === id)?.display_name ?? "";
+
+  const today = todayWib();
+  const editing = targetFor ?? members?.[0]?.id;
+  const editingTarget = targets.find((g) => g.member_id === editing);
+
+  async function saveTargets(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const value = (key: string) => Number(form.get(key)) || null;
+    setBusy(true);
+    const { error } = await supabase.from("point_targets").upsert({
+      family_id: me!.familyId,
+      member_id: editing,
+      daily: value("daily"),
+      weekly: value("weekly"),
+      monthly: value("monthly"),
+    });
+    setBusy(false);
+    if (error) return setError(error.message);
+    setVersion((v) => v + 1);
+  }
 
   async function correct(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -94,6 +127,88 @@ export default function PointsPage() {
         <p role="alert" className="text-sm text-red-600">
           {error}
         </p>
+      )}
+      {entries && (
+        <>
+          <h2 className="font-medium">{t.progressTitle}</h2>
+          {shownMembers.map((m) => (
+            <section
+              key={m.id}
+              className="flex flex-col gap-2 rounded-md border p-3"
+            >
+              {isParent && (
+                <h3 className="text-sm font-medium">{m.display_name}</h3>
+              )}
+              {progressOf(
+                entries,
+                m.id,
+                today,
+                targets.find((g) => g.member_id === m.id),
+              ).map((p) => (
+                <div key={p.period} className="flex flex-col gap-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>{t[`period_${p.period}`]}</span>
+                    <span>
+                      {p.target === null
+                        ? `${p.points} · ${t.noTarget}`
+                        : `${p.points}/${p.target} (${p.pct}%)`}
+                    </span>
+                  </div>
+                  {p.pct !== null && (
+                    <div
+                      role="progressbar"
+                      aria-label={t[`period_${p.period}`]}
+                      aria-valuenow={p.pct}
+                      className="h-2 rounded bg-black/10 dark:bg-white/20"
+                    >
+                      <div
+                        className="h-2 rounded bg-green-600"
+                        style={{ width: `${p.pct}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          ))}
+        </>
+      )}
+      {entries && isParent && (
+        <form
+          onSubmit={saveTargets}
+          className="flex flex-col gap-2 rounded-md border p-3"
+        >
+          <h2 className="font-medium">{t.setTargets}</h2>
+          <select
+            value={editing}
+            onChange={(e) => setTargetFor(e.target.value)}
+            className={inputClass}
+          >
+            {members?.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.display_name}
+              </option>
+            ))}
+          </select>
+          <div className="grid grid-cols-3 gap-2" key={`${editing}-${version}`}>
+            {periods.map((period) => (
+              <label key={period} className="flex flex-col gap-1 text-sm">
+                {t[`period_${period}`]}
+                <input
+                  name={period}
+                  type="number"
+                  min={1}
+                  defaultValue={editingTarget?.[period] ?? ""}
+                  className={inputClass}
+                />
+              </label>
+            ))}
+          </div>
+          <span className="text-xs opacity-70">{t.targetHint}</span>
+          <button type="submit" disabled={busy} className={buttonClass}>
+            {t.saveTargets}
+          </button>
+        </form>
       )}
       {entries && (
         <>

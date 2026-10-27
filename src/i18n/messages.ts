@@ -234,6 +234,14 @@ const id = {
   correctionHint: "Isi angka negatif untuk mengurangi poin.",
   correctionNote: "Catatan",
   saveCorrection: "Simpan koreksi",
+  progressTitle: "Progress Pribadi",
+  period_daily: "Hari ini",
+  period_weekly: "Minggu ini",
+  period_monthly: "Bulan ini",
+  noTarget: "Belum ada target",
+  setTargets: "Atur target poin",
+  targetHint: "Kosongkan kalau tidak pakai target.",
+  saveTargets: "Simpan target",
 };
 
 const en: typeof id = {
@@ -471,6 +479,14 @@ const en: typeof id = {
   correctionHint: "Use a negative number to take points away.",
   correctionNote: "Note",
   saveCorrection: "Save correction",
+  progressTitle: "Personal Progress",
+  period_daily: "Today",
+  period_weekly: "This week",
+  period_monthly: "This month",
+  noTarget: "No target yet",
+  setTargets: "Set point targets",
+  targetHint: "Leave empty for no target.",
+  saveTargets: "Save targets",
 };
 
 export const messages = { id, en };
