@@ -92,6 +92,12 @@ const menu: MenuItem[] = [
     icon: "M3 6h18v12H3zM3 10h18M7 15h3",
   },
   {
+    href: "/notifikasi",
+    label: "notifications",
+    roles: everyone,
+    icon: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0",
+  },
+  {
     href: "/telegram",
     label: "telegram",
     roles: everyone,

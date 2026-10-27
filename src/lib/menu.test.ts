@@ -20,6 +20,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/keluarga",
     "/master-data",
     "/keuangan",
+    "/notifikasi",
     "/telegram",
     "/ganti",
   ]);
@@ -37,6 +38,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/keluarga",
     "/master-data",
     "/keuangan",
+    "/notifikasi",
     "/telegram",
     "/ganti",
   ]);
@@ -51,6 +53,7 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
     "/kalender",
     "/moments",
     "/tugas/baru",
+    "/notifikasi",
     "/telegram",
     "/ganti",
   ]);
@@ -60,6 +63,7 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
     "/poin",
     "/hadiah",
     "/kalender",
+    "/notifikasi",
     "/telegram",
     "/ganti",
   ]);
