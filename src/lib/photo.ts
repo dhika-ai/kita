@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { queuePhoto } from "./sync/sync";
 
 // Foto diperkecil di perangkat sebelum diunggah (sekitar 300 KB) supaya muat di
 // kuota gratis Supabase Storage.
@@ -27,5 +28,16 @@ export async function uploadPhoto(bucket: string, folder: string, file: File) {
     .from(bucket)
     .upload(path, await compressPhoto(file), { contentType: "image/jpeg" });
   if (error) throw error;
+  return path;
+}
+
+/** Perkecil foto lalu masukkan ke antrean unggah (bisa offline). Mengembalikan path file. */
+export async function queueCompressedPhoto(
+  bucket: string,
+  folder: string,
+  file: File,
+) {
+  const path = `${folder}/${crypto.randomUUID()}.jpg`;
+  await queuePhoto(bucket, path, await compressPhoto(file));
   return path;
 }

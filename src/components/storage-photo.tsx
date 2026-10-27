@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { pendingPhoto } from "@/lib/sync/sync";
 
 /** Foto dari bucket privat Supabase Storage, ditampilkan lewat link sementara. */
 export function StoragePhoto({
@@ -14,10 +15,22 @@ export function StoragePhoto({
   const [url, setUrl] = useState<string>();
 
   useEffect(() => {
-    supabase.storage
-      .from(bucket)
-      .createSignedUrl(path, 3600)
-      .then(({ data }) => setUrl(data?.signedUrl));
+    let objectUrl: string | undefined;
+    void (async () => {
+      // Foto yang belum terunggah (diambil saat offline) ditampilkan dari perangkat.
+      const blob = await pendingPhoto(path);
+      if (blob) {
+        objectUrl = URL.createObjectURL(blob);
+        return setUrl(objectUrl);
+      }
+      const { data } = await supabase.storage
+        .from(bucket)
+        .createSignedUrl(path, 3600);
+      setUrl(data?.signedUrl);
+    })();
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [bucket, path]);
 
   if (!url) return null;

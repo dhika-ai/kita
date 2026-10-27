@@ -118,6 +118,14 @@ export type LocalInventoryItem = Synced & {
   restock_task_template_id: string | null;
 };
 
+// Moments (M-06): jurnal dan/atau foto harian.
+export type LocalMoment = Synced & {
+  member_id: string;
+  moment_date: string;
+  journal: string | null;
+  photo_path: string | null;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -131,6 +139,7 @@ export const localDb = new Dexie("kita") as Dexie & {
   task_instances: EntityTable<LocalTaskInstance, "id">;
   task_completions: EntityTable<LocalTaskCompletion, "id">;
   inventory_items: EntityTable<LocalInventoryItem, "id">;
+  moments: EntityTable<LocalMoment, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -159,4 +168,8 @@ localDb.version(4).stores({
 
 localDb.version(5).stores({
   inventory_items: "id",
+});
+
+localDb.version(6).stores({
+  moments: "id, moment_date",
 });
