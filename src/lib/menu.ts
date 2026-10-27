@@ -87,6 +87,12 @@ const menu: MenuItem[] = [
     icon: "M3 6h18v12H3zM3 10h18M7 15h3",
   },
   {
+    href: "/cadangan",
+    label: "backup",
+    roles: parents,
+    icon: "M12 3v12m0 0-4-4m4 4 4-4M4 17v4h16v-4",
+  },
+  {
     href: "/notifikasi",
     label: "notifications",
     roles: everyone,

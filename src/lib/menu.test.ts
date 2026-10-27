@@ -19,6 +19,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/keluarga",
     "/master-data",
     "/keuangan",
+    "/cadangan",
     "/notifikasi",
     "/ganti",
   ]);
@@ -35,6 +36,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/keluarga",
     "/master-data",
     "/keuangan",
+    "/cadangan",
     "/notifikasi",
     "/ganti",
   ]);
@@ -108,4 +110,11 @@ test("menu Telegram tidak tampil, diganti Notifikasi (P-03)", () => {
     assert.ok(!hrefs(role).includes("/telegram"));
     assert.ok(hrefs(role).includes("/notifikasi"));
   }
+});
+
+test("hanya ayah dan ibu yang melihat menu backup (B-01)", () => {
+  assert.ok(hrefs("father").includes("/cadangan"));
+  assert.ok(hrefs("mother").includes("/cadangan"));
+  assert.ok(!hrefs("child").includes("/cadangan"));
+  assert.ok(!hrefs("art").includes("/cadangan"));
 });
