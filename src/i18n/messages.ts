@@ -187,6 +187,18 @@ const id = {
   notificationsUnsupported:
     "HP atau browser ini belum bisa menerima notifikasi. Pakai Chrome di Android.",
   chooseMember: "Pilih minimal satu anggota.",
+  backup: "Backup & Restore",
+  backupHint:
+    "Unduh semua data keluarga beserta fotonya dalam satu file ZIP. Simpan di tempat aman, misalnya Google Drive.",
+  downloadBackup: "Unduh backup",
+  restoreHint:
+    "Pulihkan dari file backup. Data dari backup ditulis ulang; data yang dibuat setelah backup tetap ada.",
+  restoreBackup: "Pulihkan dari file",
+  restoreConfirm: "Pulihkan data dari backup tanggal",
+  backupWorking: "Sedang memproses {done}/{total} foto…",
+  backupDone: "Backup selesai diunduh.",
+  restoreDone: "Data berhasil dipulihkan.",
+  notBackup: "File ini bukan backup KITA.",
   telegram: "Telegram",
   telegramHint:
     "Hubungkan Telegram untuk menerima pengingat setiap pukul 07:00 dan 17:00.",
@@ -474,6 +486,18 @@ const en: typeof id = {
   notificationsUnsupported:
     "This phone or browser can't receive notifications yet. Use Chrome on Android.",
   chooseMember: "Choose at least one member.",
+  backup: "Backup & Restore",
+  backupHint:
+    "Download all family data with its photos as one ZIP file. Keep it somewhere safe, such as Google Drive.",
+  downloadBackup: "Download backup",
+  restoreHint:
+    "Restore from a backup file. Data in the backup is written back; data created after the backup stays.",
+  restoreBackup: "Restore from file",
+  restoreConfirm: "Restore data from the backup of",
+  backupWorking: "Processing photo {done}/{total}…",
+  backupDone: "Backup downloaded.",
+  restoreDone: "Data restored.",
+  notBackup: "This file is not a KITA backup.",
   telegram: "Telegram",
   telegramHint:
     "Connect Telegram to get reminders every day at 07:00 and 17:00.",
