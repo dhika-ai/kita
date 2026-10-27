@@ -8,6 +8,7 @@ const hrefs = (role: Parameters<typeof menuFor>[0]) =>
 test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("father"), [
     "/",
+    "/kalender",
     "/tugas/baru",
     "/persetujuan",
     "/keluarga",
@@ -16,6 +17,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
   ]);
   assert.deepEqual(hrefs("mother"), [
     "/",
+    "/kalender",
     "/tugas/baru",
     "/persetujuan",
     "/keluarga",
@@ -25,8 +27,8 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
 });
 
 test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
-  assert.deepEqual(hrefs("child"), ["/", "/tugas/baru", "/ganti"]);
-  assert.deepEqual(hrefs("art"), ["/", "/ganti"]);
+  assert.deepEqual(hrefs("child"), ["/", "/kalender", "/tugas/baru", "/ganti"]);
+  assert.deepEqual(hrefs("art"), ["/", "/kalender", "/ganti"]);
 });
 
 test("ART tidak melihat menu tambah tugas", () => {
@@ -37,4 +39,10 @@ test("hanya ayah dan ibu yang melihat menu persetujuan", () => {
   assert.ok(hrefs("father").includes("/persetujuan"));
   assert.ok(!hrefs("child").includes("/persetujuan"));
   assert.ok(!hrefs("art").includes("/persetujuan"));
+});
+
+test("semua peran melihat kalender", () => {
+  for (const role of ["father", "mother", "child", "art"] as const) {
+    assert.ok(hrefs(role).includes("/kalender"));
+  }
 });

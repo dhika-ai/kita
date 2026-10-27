@@ -20,6 +20,12 @@ const menu: MenuItem[] = [
     icon: "M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z",
   },
   {
+    href: "/kalender",
+    label: "calendar",
+    roles: everyone,
+    icon: "M4 5h16v16H4zM4 10h16M8 3v4m8-4v4",
+  },
+  {
     href: "/tugas/baru",
     label: "newTask",
     roles: ["father", "mother", "child"],
