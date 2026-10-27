@@ -57,3 +57,27 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+// P-02: pengingat 07:00 dan 17:00 datang sebagai push notification.
+self.addEventListener("push", (event) => {
+  const { title, body } = event.data ? event.data.json() : {};
+  event.waitUntil(
+    self.registration.showNotification(title || "KITA", {
+      body,
+      icon: "/icon-192.png",
+      badge: "/icon-192.png",
+    }),
+  );
+});
+
+// Menyentuh notifikasi membuka KITA (jendela yang sudah terbuka dipakai lagi).
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((windows) =>
+        windows.length > 0 ? windows[0].focus() : self.clients.openWindow("/"),
+      ),
+  );
+});

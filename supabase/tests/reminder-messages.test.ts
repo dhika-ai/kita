@@ -80,17 +80,9 @@ describe("R-03 isi pesan pengingat", { skip: skipReason }, () => {
         `Kemarin: ${budiCount} tugas disetujui \\(${budiPct}\\), ${budiPoints} poin\\.`,
       ),
     );
-    // Top 3 urut poin, sama untuk seluruh keluarga.
-    const top = [
-      ["Andi", Number(andiPoints)],
-      ["Budi", Number(budiPoints)],
-    ].sort((a, b) => Number(b[1]) - Number(a[1]));
-    assert.match(
-      sent[fatherId],
-      new RegExp(
-        `Top 3 kemarin:\\n1\\. ${top[0][0]} ${top[0][1]} poin\\n2\\. ${top[1][0]} ${top[1][1]} poin`,
-      ),
-    );
+    // Leaderboard di-Kill (triage 27 Okt), jadi pesan pagi tanpa "Top 3" (P-02).
+    assert.doesNotMatch(sent[fatherId], /Top 3/);
+    assert.doesNotMatch(sent[childId], /Top 3/);
     // Tugas hari ini: yang belum dan yang ditolak.
     assert.equal(
       (sent[childId].split("Today's tasks:\n")[1] ?? "").split("\n").length,
