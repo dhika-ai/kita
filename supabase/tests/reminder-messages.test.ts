@@ -1,0 +1,124 @@
+import assert from "node:assert/strict";
+import { after, before, describe, test } from "node:test";
+import { createTestDb, skipReason } from "./db.ts";
+
+const father = "00000000-0000-0000-0000-0000000000b1";
+const child = "00000000-0000-0000-0000-0000000000b3";
+
+describe("R-03 isi pesan pengingat", { skip: skipReason }, () => {
+  let db: ReturnType<typeof createTestDb>;
+  let fatherId: string;
+  let childId: string;
+  const today = "2026-10-21";
+  const yesterday = "2026-10-20";
+
+  // Edge Function memanggil fungsi ini sebagai service_role.
+  const messages = (slot: string) =>
+    JSON.parse(
+      db.admin(`begin; set local role service_role;
+        select coalesce(json_object_agg(member_id, text), '{}') from public.reminder_messages('${slot}', '${today}');
+        commit;`),
+    ) as Record<string, string>;
+
+  before(() => {
+    db = createTestDb();
+    db.admin(`insert into auth.users (id) values ('${father}'), ('${child}');`);
+    db.as(father, "select public.create_family('Keluarga Budi', 'Budi');");
+    fatherId = db.as(father, "select (private.my_member()).id;");
+    childId = db.as(father, "select public.add_member('Andi', 'child');");
+    db.admin(`
+      update public.members set telegram_chat_id = 1 where id = '${fatherId}';
+      update public.members set telegram_chat_id = 2, language = 'en' where id = '${childId}';`);
+
+    // Kemarin: Andi 4 tugas (2 disetujui, 1 menunggu, 1 terlewat), Budi 1 disetujui.
+    // Hari ini: Andi 3 tugas (1 belum, 1 ditolak, 1 selesai menunggu persetujuan).
+    db.admin(`
+      with picked as (
+        select t.id, row_number() over (order by t.title_id) as n
+        from public.task_templates t
+        join public.members m on m.family_id = t.family_id and m.id = '${childId}'
+        where t.recurrence is not null
+        limit 8
+      )
+      insert into public.task_instances (family_id, template_id, assignee_id, due_date, status, counts_on)
+      select m.family_id, p.id,
+        case when p.n = 5 then '${fatherId}'::uuid else m.id end,
+        (case when p.n <= 5 then '${yesterday}' else '${today}' end)::date,
+        (array['approved', 'approved', 'done', 'missed', 'approved', 'open', 'rejected', 'done'])[p.n]::public.task_status,
+        case when p.n in (1, 2, 5) then date '${today}' end
+      from picked p join public.members m on m.id = '${childId}';`);
+  });
+
+  after(() => db?.drop());
+
+  test("pesan pagi cocok dengan angka dashboard kemarin", () => {
+    const view = (memberId: string) =>
+      db
+        .as(
+          father,
+          `select approved || '/' || total || ' ' || completion_pct || '% ' || points
+           from public.dashboard_daily where member_id = '${memberId}' and due_date = '${yesterday}';`,
+        )
+        .split(" ");
+    const [andiCount, andiPct, andiPoints] = view(childId);
+    const [budiCount, budiPct, budiPoints] = view(fatherId);
+    assert.equal(andiCount, "2/4");
+    assert.equal(andiPct, "50%");
+
+    const sent = messages("morning");
+    assert.equal(Object.keys(sent).length, 2);
+    // Andi memakai bahasa Inggris.
+    assert.match(
+      sent[childId],
+      new RegExp(
+        `^Good morning, Andi!\\n\\nYesterday: ${andiCount} tasks approved \\(${andiPct}\\), ${andiPoints} pts\\.`,
+      ),
+    );
+    assert.match(
+      sent[fatherId],
+      new RegExp(
+        `Kemarin: ${budiCount} tugas disetujui \\(${budiPct}\\), ${budiPoints} poin\\.`,
+      ),
+    );
+    // Top 3 urut poin, sama untuk seluruh keluarga.
+    const top = [
+      ["Andi", Number(andiPoints)],
+      ["Budi", Number(budiPoints)],
+    ].sort((a, b) => Number(b[1]) - Number(a[1]));
+    assert.match(
+      sent[fatherId],
+      new RegExp(
+        `Top 3 kemarin:\\n1\\. ${top[0][0]} ${top[0][1]} poin\\n2\\. ${top[1][0]} ${top[1][1]} poin`,
+      ),
+    );
+    // Tugas hari ini: yang belum dan yang ditolak.
+    assert.equal(
+      (sent[childId].split("Today's tasks:\n")[1] ?? "").split("\n").length,
+      2,
+    );
+    assert.match(sent[fatherId], /Tugas hari ini:\nTidak ada\.$/);
+  });
+
+  test("pesan sore: tugas belum selesai dan jumlah menunggu persetujuan", () => {
+    const sent = messages("evening");
+    assert.match(
+      sent[childId],
+      /^Good afternoon, Andi! Today's unfinished tasks:\n- .+\n- .+\n\nWaiting for approval: 2$/,
+    );
+    // Ayah melihat yang menunggu di seluruh keluarga.
+    assert.equal(
+      sent[fatherId],
+      "Sore, Budi! Semua tugas hari ini sudah selesai.\n\nMenunggu persetujuan: 2",
+    );
+  });
+
+  test("anggota yang belum terhubung tidak dapat pesan, aplikasi tidak bisa memanggil", () => {
+    db.admin(
+      `update public.members set telegram_chat_id = null where id = '${fatherId}';`,
+    );
+    assert.deepEqual(Object.keys(messages("evening")), [childId]);
+    assert.throws(() =>
+      db.as(father, "select * from public.reminder_messages('morning');"),
+    );
+  });
+});
