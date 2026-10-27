@@ -1,16 +1,18 @@
 -- Tiruan minimal skema auth Supabase, HANYA untuk test di Postgres biasa.
 -- Di Supabase asli semua ini sudah ada.
+-- Peran dibuat dengan penanganan unique_violation juga, karena file test berjalan paralel
+-- dan bisa membuat peran yang sama di saat bersamaan.
 create schema if not exists extensions;
 create extension if not exists pgcrypto with schema extensions;
 do $$ begin
   create role anon nologin;
-exception when duplicate_object then null; end $$;
+exception when duplicate_object or unique_violation then null; end $$;
 do $$ begin
   create role authenticated nologin;
-exception when duplicate_object then null; end $$;
+exception when duplicate_object or unique_violation then null; end $$;
 do $$ begin
   create role service_role nologin bypassrls;
-exception when duplicate_object then null; end $$;
+exception when duplicate_object or unique_violation then null; end $$;
 
 create schema auth;
 create table auth.users (id uuid primary key default gen_random_uuid(), email text);
