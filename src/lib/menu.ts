@@ -92,6 +92,12 @@ const menu: MenuItem[] = [
     icon: "M4 6h16M4 12h16M4 18h10",
   },
   {
+    href: "/keuangan",
+    label: "finance",
+    roles: parents,
+    icon: "M3 6h18v12H3zM3 10h18M7 15h3",
+  },
+  {
     href: "/telegram",
     label: "telegram",
     roles: everyone,

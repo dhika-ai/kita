@@ -19,7 +19,22 @@ const pulledTables = {
   moments: "*",
   moment_picks: "*",
   daily_messages: "*",
+  accounts: "*",
+  budget_posts: "*",
+  transactions: "*",
 } as const;
+
+// Tabel keuangan hanya ditarik di perangkat ayah/ibu (K-01). Di database pun RLS
+// menolak anak dan ART, tapi dengan ini permintaannya tidak dikirim sama sekali.
+export const financeTables = ["accounts", "budget_posts", "transactions"];
+let financeAllowed = false;
+
+/** Dipanggil saat peran pemakai perangkat diketahui. */
+export function setFinanceAccess(allowed: boolean) {
+  if (allowed === financeAllowed) return;
+  financeAllowed = allowed;
+  if (allowed) void sync();
+}
 
 // Entri antrean untuk foto memakai nama tabel "storage/<bucket>" dan row { id: path, blob }.
 const storagePrefix = "storage/";
@@ -129,6 +144,7 @@ export function sync(): Promise<void> {
         again = false;
         await push();
         for (const table of Object.keys(pulledTables) as PulledTable[]) {
+          if (financeTables.includes(table) && !financeAllowed) continue;
           await pull(table);
         }
       } while (again);

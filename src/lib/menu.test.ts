@@ -20,6 +20,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/inventaris",
     "/keluarga",
     "/master-data",
+    "/keuangan",
     "/telegram",
     "/ganti",
   ]);
@@ -37,6 +38,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/inventaris",
     "/keluarga",
     "/master-data",
+    "/keuangan",
     "/telegram",
     "/ganti",
   ]);
