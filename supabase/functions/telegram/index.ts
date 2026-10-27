@@ -1,8 +1,11 @@
 // R-01: webhook bot Telegram (Supabase Edge Function).
 // Secret yang dibutuhkan: TELEGRAM_BOT_TOKEN (dari BotFather).
+// R-02: "/start <kode>" menghubungkan chat ini ke anggota lewat fungsi link_telegram.
 // Daftarkan webhook sekali dengan membuka <url fungsi>?setup=1 di browser.
 import {
   languageOf,
+  linkReply,
+  startCode,
   startReply,
   webhookSecret,
   type TelegramUpdate,
@@ -10,6 +13,23 @@ import {
 
 const token = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "";
 const functionUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/telegram`;
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+async function rpc(name: string, args: unknown) {
+  const res = await fetch(`${supabaseUrl}/rest/v1/rpc/${name}`, {
+    method: "POST",
+    headers: {
+      apikey: serviceKey,
+      authorization: `Bearer ${serviceKey}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(args),
+  });
+  if (!res.ok) throw new Error(`${name}: ${res.status} ${await res.text()}`);
+  return res.json();
+}
 
 function telegram(method: string, body: unknown) {
   return fetch(`https://api.telegram.org/bot${token}/${method}`, {
@@ -40,10 +60,14 @@ Deno.serve(async (req) => {
   const update = (await req.json()) as TelegramUpdate;
   const message = update.message;
   if (message?.text?.startsWith("/start")) {
-    await telegram("sendMessage", {
-      chat_id: message.chat.id,
-      text: startReply(languageOf(update)),
-    });
+    const code = startCode(message.text);
+    const text = code
+      ? linkReply(
+          (await rpc("link_telegram", { code, chat_id: message.chat.id }))[0],
+          languageOf(update),
+        )
+      : startReply(languageOf(update));
+    await telegram("sendMessage", { chat_id: message.chat.id, text });
   }
   return new Response("ok");
 });

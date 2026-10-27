@@ -20,6 +20,7 @@ export type LocalMember = {
   invite_code: string | null;
   has_pin: boolean;
   pin_locked: boolean;
+  telegram_connected?: boolean;
   is_active: boolean;
   created_at: string;
   updated_at: string;

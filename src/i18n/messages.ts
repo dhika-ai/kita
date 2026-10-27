@@ -181,6 +181,13 @@ const id = {
   wholeFamily: "Seluruh keluarga",
   pointsHint:
     "Poin dihitung dari tugas yang disetujui, berlaku mulai besoknya.",
+  telegram: "Telegram",
+  telegramHint:
+    "Hubungkan Telegram untuk menerima pengingat setiap pukul 07:00 dan 17:00.",
+  telegramConnected: "Telegram sudah terhubung.",
+  connectTelegram: "Hubungkan Telegram",
+  openTelegram: "Buka Telegram",
+  telegramCodeHint: "Atau kirim pesan ini ke bot KITA (berlaku 15 menit):",
 };
 
 const en: typeof id = {
@@ -364,6 +371,14 @@ const en: typeof id = {
   waitingApproval: "Waiting for approval",
   wholeFamily: "Whole family",
   pointsHint: "Points come from approved tasks and count from the next day.",
+  telegram: "Telegram",
+  telegramHint:
+    "Connect Telegram to get reminders every day at 07:00 and 17:00.",
+  telegramConnected: "Telegram is connected.",
+  connectTelegram: "Connect Telegram",
+  openTelegram: "Open Telegram",
+  telegramCodeHint:
+    "Or send this message to the KITA bot (valid for 15 minutes):",
 };
 
 export const messages = { id, en };
