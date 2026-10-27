@@ -64,6 +64,26 @@ export type LocalSop = Synced & {
   photo_path: string | null;
 };
 
+export type ChoreType = "routine" | "periodic" | "adhoc";
+export type Recurrence = "daily" | "weekly" | "monthly";
+
+export type LocalTaskTemplate = Synced & {
+  title_en: string;
+  title_id: string;
+  category_id: string;
+  area_id: string;
+  sop_id: string | null;
+  chore_type: ChoreType;
+  recurrence: Recurrence | null;
+  /** 1 = Senin ... 7 = Minggu */
+  weekdays: number[] | null;
+  month_day: number | null;
+  due_time: string | null;
+  default_assignee_id: string | null;
+  points: number;
+  requires_approval: boolean;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -73,6 +93,7 @@ export const localDb = new Dexie("kita") as Dexie & {
   areas: EntityTable<LocalArea, "id">;
   categories: EntityTable<LocalCategory, "id">;
   sops: EntityTable<LocalSop, "id">;
+  task_templates: EntityTable<LocalTaskTemplate, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -88,4 +109,8 @@ localDb.version(2).stores({
   areas: "id",
   categories: "id",
   sops: "id",
+});
+
+localDb.version(3).stores({
+  task_templates: "id",
 });

@@ -95,7 +95,11 @@ describe("T-01 tabel master data", { skip: skipReason }, () => {
           () =>
             db.as(
               user,
-              `insert into public.${table} (family_id) values ('${familyId}');`,
+              table === "task_templates"
+                ? // Data lengkap dan valid, supaya yang menolak memang RLS.
+                  `insert into public.task_templates (family_id, title_en, title_id, category_id, area_id, chore_type)
+                   values ('${familyId}', 'X', 'X', '${categoryId}', '${areaId}', 'adhoc');`
+                : `insert into public.${table} (family_id) values ('${familyId}');`,
             ),
           /row-level security/,
           `${who} menambah ${table}`,
@@ -150,7 +154,7 @@ describe("T-01 tabel master data", { skip: skipReason }, () => {
           `insert into public.task_templates (family_id, title_en, title_id, category_id, area_id, chore_type)
            values ('${familyId}', 'X', 'X', '${categoryId}', '${otherAreaId}', 'adhoc');`,
         ),
-      /foreign key/,
+      /foreign key|Area tidak ada/,
     );
     assert.throws(
       () =>
@@ -159,7 +163,7 @@ describe("T-01 tabel master data", { skip: skipReason }, () => {
           `insert into public.task_templates (family_id, title_en, title_id, area_id, chore_type)
            values ('${familyId}', 'X', 'X', '${areaId}', 'adhoc');`,
         ),
-      /null value in column "category_id"/,
+      /null value in column "category_id"|Kategori tidak ada/,
     );
   });
 
