@@ -181,6 +181,17 @@ const id = {
   wholeFamily: "Seluruh keluarga",
   pointsHint:
     "Poin masuk saat tugas dicentang selesai, dan ditarik kembali kalau tugasnya ditolak.",
+  notifications: "Notifikasi",
+  notificationsHint:
+    "Terima pengingat pukul 07:00 dan 17:00 di HP ini. Ayah/ibu bisa ikut menerima pengingat si kecil.",
+  notificationsFor: "Terima pengingat untuk",
+  enableNotifications: "Aktifkan notifikasi di HP ini",
+  notificationsOn: "Notifikasi aktif di HP ini.",
+  notificationsBlocked:
+    "Izin notifikasi ditolak. Izinkan dari pengaturan browser lalu coba lagi.",
+  notificationsUnsupported:
+    "HP atau browser ini belum bisa menerima notifikasi. Pakai Chrome di Android.",
+  chooseMember: "Pilih minimal satu anggota.",
   telegram: "Telegram",
   telegramHint:
     "Hubungkan Telegram untuk menerima pengingat setiap pukul 07:00 dan 17:00.",
@@ -467,6 +478,17 @@ const en: typeof id = {
   wholeFamily: "Whole family",
   pointsHint:
     "Points are added when a task is ticked done, and taken back if the task is rejected.",
+  notifications: "Notifications",
+  notificationsHint:
+    "Get the 07:00 and 17:00 reminders on this phone. Parents can also receive the kids' reminders.",
+  notificationsFor: "Receive reminders for",
+  enableNotifications: "Turn on notifications on this phone",
+  notificationsOn: "Notifications are on for this phone.",
+  notificationsBlocked:
+    "Notification permission was denied. Allow it in the browser settings and try again.",
+  notificationsUnsupported:
+    "This phone or browser can't receive notifications yet. Use Chrome on Android.",
+  chooseMember: "Choose at least one member.",
   telegram: "Telegram",
   telegramHint:
     "Connect Telegram to get reminders every day at 07:00 and 17:00.",
