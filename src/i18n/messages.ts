@@ -199,6 +199,12 @@ const id = {
   momentEmpty: "Isi jurnal atau pilih foto dulu.",
   noMoments: "Belum ada moment.",
   noAccess: "Halaman ini tidak tersedia untuk peranmu.",
+  momentOf_week: "Moment of the Week",
+  momentOf_month: "Moment of the Month",
+  noPickYet: "Belum dipilih. Ayah atau Ibu bisa memilih dari saran di bawah.",
+  suggestions: "Saran",
+  pick: "Pilih",
+  picked: "Terpilih",
 };
 
 const en: typeof id = {
@@ -401,6 +407,12 @@ const en: typeof id = {
   momentEmpty: "Write a journal entry or pick a photo first.",
   noMoments: "No moments yet.",
   noAccess: "This page is not available for your role.",
+  momentOf_week: "Moment of the Week",
+  momentOf_month: "Moment of the Month",
+  noPickYet: "Not picked yet. Dad or Mum can pick from the suggestions below.",
+  suggestions: "Suggestions",
+  pick: "Pick",
+  picked: "Picked",
 };
 
 export const messages = { id, en };

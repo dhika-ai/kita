@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MomentCard } from "@/components/moment-card";
 import { useMessages } from "@/i18n/language";
 import { useSession } from "@/lib/auth";
 import { datesIn, type CalendarView } from "@/lib/calendar";
@@ -14,6 +15,7 @@ const periods: CalendarView[] = ["day", "week", "month"];
 
 // T-12: dashboard dasar dari view dashboard_daily (T-11), jadi angkanya sama
 // dengan perhitungan server. Butuh internet.
+// M-08: Moment of the Week & Month pilihan orang tua (dari perangkat, tanpa ART).
 export default function DashboardPage() {
   const t = useMessages();
   const session = useSession();
@@ -27,6 +29,23 @@ export default function DashboardPage() {
       ),
     [],
   );
+
+  const picks = useLiveQuery(async () => {
+    const today = todayWib();
+    const starts = {
+      week: datesIn("week", today)[0],
+      month: datesIn("month", today)[0],
+    };
+    const current = (await localDb.moment_picks.toArray()).filter(
+      (p) => !p.deleted_at && p.period_start === starts[p.period],
+    );
+    const moments = await localDb.moments.bulkGet(
+      current.map((p) => p.moment_id),
+    );
+    return current.flatMap((p, i) =>
+      moments[i] ? [{ period: p.period, moment: moments[i] }] : [],
+    );
+  }, []);
 
   useEffect(() => {
     if (!session) return;
@@ -64,6 +83,20 @@ export default function DashboardPage() {
           </button>
         ))}
       </div>
+      {picks && picks.length > 0 && (
+        <ul className="grid gap-2 md:grid-cols-2">
+          {picks.map(({ period, moment }) => (
+            <MomentCard
+              key={period}
+              moment={moment}
+              name={`${t[`momentOf_${period}`]} · ${
+                members?.find((m) => m.id === moment.member_id)?.display_name ??
+                ""
+              }`}
+            />
+          ))}
+        </ul>
+      )}
       {error && (
         <p role="alert" className="text-sm text-red-600">
           {error}
