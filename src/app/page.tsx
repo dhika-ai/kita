@@ -49,9 +49,14 @@ export default function Home() {
           ) : family === null ? (
             <p>{t.noFamily}</p>
           ) : (
-            <p className="text-lg">
-              {t.greeting}, {family.displayName} · {family.familyName}
-            </p>
+            <>
+              <p className="text-lg">
+                {t.greeting}, {family.displayName} · {family.familyName}
+              </p>
+              <Link href="/keluarga" className="underline">
+                {t.familyMembers}
+              </Link>
+            </>
           )}
           <button
             type="button"

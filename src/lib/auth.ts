@@ -19,21 +19,28 @@ export function useSession() {
   return session;
 }
 
-export type MyFamily = { familyName: string; displayName: string };
+export type Role = "father" | "mother" | "child" | "art";
+
+export type MyFamily = {
+  memberId: string;
+  role: Role;
+  familyName: string;
+  displayName: string;
+};
 
 /**
  * Mengambil keluarga milik pengguna. Kalau ayah baru saja mendaftar dan belum punya
  * keluarga, keluarga dibuat dari nama yang ia isi saat daftar (disimpan di metadata akun).
+ * Kalau ia mendaftar lewat link undangan, ia digabungkan ke keluarga pengundang.
  */
 export async function loadMyFamily(user: User): Promise<MyFamily | null> {
   let member = await fetchMember(user.id);
 
-  const { family_name, display_name } = user.user_metadata;
-  if (!member && family_name && display_name) {
-    const { error } = await supabase.rpc("create_family", {
-      family_name,
-      display_name,
-    });
+  const { family_name, display_name, invite_code } = user.user_metadata;
+  if (!member && (invite_code || (family_name && display_name))) {
+    const { error } = invite_code
+      ? await supabase.rpc("join_family", { invite_code })
+      : await supabase.rpc("create_family", { family_name, display_name });
     member = await fetchMember(user.id);
     // Gagal karena keluarga sudah dibuat oleh permintaan lain yang berjalan bersamaan: tidak apa-apa.
     if (error && !member) throw error;
@@ -45,11 +52,16 @@ export async function loadMyFamily(user: User): Promise<MyFamily | null> {
 async function fetchMember(authUserId: string): Promise<MyFamily | null> {
   const { data, error } = await supabase
     .from("members")
-    .select("display_name, families(name)")
+    .select("id, role, display_name, families(name)")
     .eq("auth_user_id", authUserId)
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
   const family = data.families as unknown as { name: string } | null;
-  return { familyName: family?.name ?? "", displayName: data.display_name };
+  return {
+    memberId: data.id,
+    role: data.role,
+    familyName: family?.name ?? "",
+    displayName: data.display_name,
+  };
 }

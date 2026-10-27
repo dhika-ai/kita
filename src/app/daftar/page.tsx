@@ -1,15 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { buttonClass, Field } from "@/components/auth-form";
 import { useMessages } from "@/i18n/language";
 import { loadMyFamily } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
 export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
   const t = useMessages();
+  // Ada kode berarti anggota datang dari link undangan (F-06): tidak membuat keluarga baru.
+  const inviteCode = useSearchParams().get("kode");
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -26,10 +36,12 @@ export default function RegisterPage() {
       password: String(form.get("password")),
       options: {
         emailRedirectTo: `${location.origin}/masuk`,
-        data: {
-          family_name: String(form.get("familyName")),
-          display_name: String(form.get("displayName")),
-        },
+        data: inviteCode
+          ? { invite_code: inviteCode }
+          : {
+              family_name: String(form.get("familyName")),
+              display_name: String(form.get("displayName")),
+            },
       },
     });
 
@@ -51,13 +63,20 @@ export default function RegisterPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-4 p-6">
-      <h1 className="text-2xl font-bold">{t.registerTitle}</h1>
+      <h1 className="text-2xl font-bold">
+        {inviteCode ? t.joinTitle : t.registerTitle}
+      </h1>
+      {inviteCode && !sent && <p>{t.joinIntro}</p>}
       {sent ? (
         <p role="status">{t.checkEmail}</p>
       ) : (
         <form onSubmit={submit} className="flex flex-col gap-3">
-          <Field label={t.familyName} name="familyName" />
-          <Field label={t.fatherName} name="displayName" />
+          {!inviteCode && (
+            <>
+              <Field label={t.familyName} name="familyName" />
+              <Field label={t.fatherName} name="displayName" />
+            </>
+          )}
           <Field
             label={t.email}
             name="email"
