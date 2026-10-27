@@ -81,9 +81,6 @@ export default function FamilyPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 p-6">
-      <Link href="/" className="text-sm underline">
-        {t.back}
-      </Link>
       <h1 className="text-2xl font-bold">{t.familyMembers}</h1>
       <p className="text-sm opacity-70">{t.maxMembers}</p>
 

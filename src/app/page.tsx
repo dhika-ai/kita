@@ -57,12 +57,6 @@ export default function Home() {
                 {t.greeting}, {active?.displayName ?? family.displayName} ·{" "}
                 {family.familyName}
               </p>
-              <Link href="/keluarga" className="underline">
-                {t.familyMembers}
-              </Link>
-              <Link href="/ganti" className="underline">
-                {t.switchUser}
-              </Link>
             </>
           )}
           {!active && (
