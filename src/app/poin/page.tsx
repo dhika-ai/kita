@@ -21,10 +21,18 @@ type Entry = {
 };
 
 type Target = Targets & { member_id: string };
+type Badge = {
+  id: string;
+  member_id: string;
+  kind: "streak_7" | "area_specialist";
+  area_id: string | null;
+  earned_on: string;
+};
 
 // G-01: saldo dan riwayat poin dari point_ledger. G-02: Progress Pribadi terhadap target
 // harian/mingguan/bulanan. Ayah/Ibu melihat semua anggota, bisa mengoreksi poin dan
-// memasang target; anak dan ART melihat miliknya sendiri. Butuh internet.
+// memasang target; anak dan ART melihat miliknya sendiri. G-03: lencana yang didapat.
+// Butuh internet.
 export default function PointsPage() {
   const t = useMessages();
   const language = useLanguage();
@@ -36,12 +44,14 @@ export default function PointsPage() {
   const [busy, setBusy] = useState(false);
   const [targets, setTargets] = useState<Target[]>([]);
   const [targetFor, setTargetFor] = useState<string>();
+  const [badges, setBadges] = useState<Badge[]>([]);
 
   useEffect(() => {
     if (!session) return;
     loadMyFamily(session.user).then(setMe, () => setMe(null));
   }, [session]);
 
+  const areas = useLiveQuery(() => localDb.areas.toArray(), []);
   const members = useLiveQuery(
     async () =>
       (await localDb.members.toArray()).filter(
@@ -55,7 +65,7 @@ export default function PointsPage() {
     if (!session) return;
     void (async () => {
       if (!navigator.onLine) return setError(t.needsOnline);
-      const [ledger, goals] = await Promise.all([
+      const [ledger, goals, earned] = await Promise.all([
         supabase
           .from("point_ledger")
           .select("id, member_id, points, kind, note, created_at")
@@ -63,10 +73,15 @@ export default function PointsPage() {
         supabase
           .from("point_targets")
           .select("member_id, daily, weekly, monthly"),
+        supabase
+          .from("badges")
+          .select("id, member_id, kind, area_id, earned_on")
+          .order("earned_on", { ascending: false }),
       ]);
       setError(ledger.error?.message ?? goals.error?.message ?? "");
       setEntries((ledger.data as Entry[] | null) ?? undefined);
       setTargets(goals.data ?? []);
+      setBadges(earned.data ?? []);
     })();
   }, [session, version, t]);
 
@@ -80,6 +95,13 @@ export default function PointsPage() {
   const shown = (entries ?? []).filter(
     (e) => isParent || e.member_id === memberId,
   );
+  const shownBadges = badges.filter(
+    (b) => isParent || b.member_id === memberId,
+  );
+  const areaName = (id: string | null) => {
+    const area = areas?.find((a) => a.id === id);
+    return area ? (language === "en" ? area.name_en : area.name_id) : "";
+  };
   const name = (id: string) =>
     members?.find((m) => m.id === id)?.display_name ?? "";
 
@@ -171,6 +193,26 @@ export default function PointsPage() {
               ))}
             </section>
           ))}
+        </>
+      )}
+      {entries && (
+        <>
+          <h2 className="font-medium">{t.badges}</h2>
+          {shownBadges.length === 0 && (
+            <p className="text-sm opacity-70">{t.noBadges}</p>
+          )}
+          <ul className="flex flex-wrap gap-2">
+            {shownBadges.map((b) => (
+              <li
+                key={b.id}
+                className="rounded-full border border-amber-500 bg-amber-50 px-3 py-1 text-sm dark:bg-amber-950"
+              >
+                🏅 {isParent && `${name(b.member_id)} · `}
+                {t[`badge_${b.kind}`]}
+                {b.area_id && ` · ${areaName(b.area_id)}`}
+              </li>
+            ))}
+          </ul>
         </>
       )}
       {entries && isParent && (

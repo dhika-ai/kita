@@ -242,6 +242,10 @@ const id = {
   setTargets: "Atur target poin",
   targetHint: "Kosongkan kalau tidak pakai target.",
   saveTargets: "Simpan target",
+  badges: "Lencana",
+  noBadges: "Belum ada lencana.",
+  badge_streak_7: "Streak 7 hari",
+  badge_area_specialist: "Spesialis area",
 };
 
 const en: typeof id = {
@@ -487,6 +491,10 @@ const en: typeof id = {
   setTargets: "Set point targets",
   targetHint: "Leave empty for no target.",
   saveTargets: "Save targets",
+  badges: "Badges",
+  noBadges: "No badges yet.",
+  badge_streak_7: "7-day streak",
+  badge_area_specialist: "Area specialist",
 };
 
 export const messages = { id, en };
