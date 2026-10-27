@@ -21,7 +21,6 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/master-data",
     "/keuangan",
     "/notifikasi",
-    "/telegram",
     "/ganti",
   ]);
   assert.deepEqual(hrefs("mother"), [
@@ -39,7 +38,6 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/master-data",
     "/keuangan",
     "/notifikasi",
-    "/telegram",
     "/ganti",
   ]);
 });
@@ -54,7 +52,6 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
     "/moments",
     "/tugas/baru",
     "/notifikasi",
-    "/telegram",
     "/ganti",
   ]);
   assert.deepEqual(hrefs("art"), [
@@ -64,7 +61,6 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
     "/hadiah",
     "/kalender",
     "/notifikasi",
-    "/telegram",
     "/ganti",
   ]);
 });
@@ -109,4 +105,11 @@ test("menu Keuangan hanya untuk ayah dan ibu (K-06)", () => {
   assert.ok(hrefs("mother").includes("/keuangan"));
   assert.ok(!hrefs("child").includes("/keuangan"));
   assert.ok(!hrefs("art").includes("/keuangan"));
+});
+
+test("menu Telegram tidak tampil, diganti Notifikasi (P-03)", () => {
+  for (const role of ["father", "mother", "child", "art"] as const) {
+    assert.ok(!hrefs(role).includes("/telegram"));
+    assert.ok(hrefs(role).includes("/notifikasi"));
+  }
 });

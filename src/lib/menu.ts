@@ -12,6 +12,7 @@ const everyone: Role[] = ["father", "mother", "child", "art"];
 const parents: Role[] = ["father", "mother"];
 
 // Menu per peran. Fitur rilis berikutnya menambah barisnya di sini saat sudah siap.
+// P-03: Telegram diganti push notification; halamannya (/telegram) disimpan tapi tidak di menu.
 const menu: MenuItem[] = [
   {
     href: "/",
@@ -96,12 +97,6 @@ const menu: MenuItem[] = [
     label: "notifications",
     roles: everyone,
     icon: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0",
-  },
-  {
-    href: "/telegram",
-    label: "telegram",
-    roles: everyone,
-    icon: "M21 4 3 11l6 2 2 6 3-4 5 4zM9 13l9-6",
   },
   {
     href: "/ganti",
