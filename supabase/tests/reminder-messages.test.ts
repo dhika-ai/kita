@@ -91,16 +91,15 @@ describe("R-03 isi pesan pengingat", { skip: skipReason }, () => {
     assert.match(sent[fatherId], /Tugas hari ini:\nTidak ada\.$/);
   });
 
-  test("pesan sore: tugas belum selesai dan jumlah menunggu persetujuan", () => {
+  test("pesan sore: tugas belum selesai, tanpa jumlah menunggu persetujuan (R-06)", () => {
     const sent = messages("evening");
     assert.match(
       sent[childId],
-      /^Good afternoon, Andi! Today's unfinished tasks:\n- .+\n- .+\n\nWaiting for approval: 2$/,
+      /^Good afternoon, Andi! Today's unfinished tasks:\n- .+\n- .+$/,
     );
-    // Ayah melihat yang menunggu di seluruh keluarga.
     assert.equal(
       sent[fatherId],
-      "Sore, Budi! Semua tugas hari ini sudah selesai.\n\nMenunggu persetujuan: 2",
+      "Sore, Budi! Semua tugas hari ini sudah selesai.",
     );
   });
 
