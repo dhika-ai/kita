@@ -124,6 +124,19 @@ const id = {
   needsOnline: "Butuh koneksi internet.",
   childHabitHint: "Anak bisa membuat kebiasaan pribadi untuk dirinya sendiri.",
   cannotCreateTask: "ART tidak bisa membuat tugas.",
+  today: "Tugas hari ini",
+  noTasksToday: "Tidak ada tugas hari ini.",
+  unassigned: "Belum ada penanggung jawab",
+  markDone: "Tandai selesai",
+  note: "Catatan (boleh kosong)",
+  proofPhoto: "Foto bukti (boleh kosong)",
+  showSop: "Lihat SOP",
+  hideSop: "Tutup SOP",
+  status_open: "Belum",
+  status_done: "Selesai, menunggu persetujuan",
+  status_approved: "Disetujui",
+  status_rejected: "Ditolak",
+  status_missed: "Terlewat",
 };
 
 const en: typeof id = {
@@ -251,6 +264,19 @@ const en: typeof id = {
   needsOnline: "Needs an internet connection.",
   childHabitHint: "Children can create personal habits for themselves.",
   cannotCreateTask: "Helpers cannot create tasks.",
+  today: "Today's tasks",
+  noTasksToday: "No tasks today.",
+  unassigned: "No assignee yet",
+  markDone: "Mark as done",
+  note: "Note (optional)",
+  proofPhoto: "Photo proof (optional)",
+  showSop: "Show SOP",
+  hideSop: "Hide SOP",
+  status_open: "Not yet",
+  status_done: "Done, waiting for approval",
+  status_approved: "Approved",
+  status_rejected: "Rejected",
+  status_missed: "Missed",
 };
 
 export const messages = { id, en };

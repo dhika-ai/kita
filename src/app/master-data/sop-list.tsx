@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { buttonClass, Field, inputClass } from "@/components/auth-form";
+import { StoragePhoto } from "@/components/storage-photo";
 import { useLanguage, useMessages } from "@/i18n/language";
 import { localDb, type LocalSop, type SopStep } from "@/lib/local-db";
-import { compressPhoto } from "@/lib/photo";
-import { supabase } from "@/lib/supabase";
+import { uploadPhoto } from "@/lib/photo";
 import { saveLocal } from "@/lib/sync/sync";
 import { useLiveQuery } from "@/lib/use-live-query";
 import { DeleteButton, FormButtons } from "./name-list";
@@ -208,7 +208,7 @@ function SopForm({
   );
 }
 
-/** Foto satu langkah: unggah (butuh online) dan tampilkan lewat link sementara. */
+/** Foto satu langkah: unggah (butuh online) dan tampilkan. */
 function StepPhoto({
   path,
   folder,
@@ -219,39 +219,25 @@ function StepPhoto({
   onChange: (path: string | null) => void;
 }) {
   const t = useMessages();
-  const [url, setUrl] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (!path) return;
-    supabase.storage
-      .from(bucket)
-      .createSignedUrl(path, 3600)
-      .then(({ data }) => setUrl(data?.signedUrl));
-  }, [path]);
 
   async function upload(file: File) {
     if (!navigator.onLine) return setError(t.photoNeedsOnline);
     setBusy(true);
     setError("");
-    const newPath = `${folder}/${crypto.randomUUID()}.jpg`;
-    const { error } = await supabase.storage
-      .from(bucket)
-      .upload(newPath, await compressPhoto(file), {
-        contentType: "image/jpeg",
-      });
-    setBusy(false);
-    if (error) setError(error.message);
-    else onChange(newPath);
+    try {
+      onChange(await uploadPhoto(bucket, folder, file));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t.errorGeneric);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <div className="flex flex-col gap-1 text-sm">
-      {path && url && (
-        // eslint-disable-next-line @next/next/no-img-element -- link sementara dari Supabase
-        <img src={url} alt="" className="max-h-48 w-fit rounded-md" />
-      )}
+      {path && <StoragePhoto bucket={bucket} path={path} />}
       {path ? (
         <button
           type="button"
