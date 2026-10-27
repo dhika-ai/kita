@@ -26,6 +26,12 @@ const menu: MenuItem[] = [
     icon: "M4 20V10m6 10V4m6 16v-7m4 7H2",
   },
   {
+    href: "/laporan",
+    label: "report",
+    roles: everyone,
+    icon: "M6 2h9l5 5v15H6zM14 2v6h6M9 13h8M9 17h8",
+  },
+  {
     href: "/kalender",
     label: "calendar",
     roles: everyone,
