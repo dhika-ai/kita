@@ -11,7 +11,9 @@ import { localDb, type LocalMember } from "@/lib/local-db";
 import { supabase } from "@/lib/supabase";
 import { sync } from "@/lib/sync/sync";
 
-const roles: Role[] = ["father", "mother", "child", "art"];
+// L-02: peran ART berstatus Review (triage 27 Okt), jadi tidak bisa dipilih lagi.
+// Anggota ART yang sudah ada tetap tampil dengan perannya.
+const roles: Role[] = ["father", "mother", "child"];
 
 type Member = LocalMember;
 
@@ -110,7 +112,10 @@ export default function FamilyPage() {
                   }
                   className={inputClass}
                 >
-                  {roles.map((role) => (
+                  {(member.role === "art"
+                    ? [...roles, member.role]
+                    : roles
+                  ).map((role) => (
                     <option key={role} value={role}>
                       {t[`role_${role}`]}
                     </option>

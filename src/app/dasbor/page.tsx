@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DailyMessageCard } from "@/components/daily-message-card";
 import { MomentCard } from "@/components/moment-card";
 import { ProgressCard } from "@/components/progress-card";
-import { useLanguage, useMessages } from "@/i18n/language";
+import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { addDays, datesIn, type CalendarView } from "@/lib/calendar";
@@ -23,28 +23,19 @@ type Entry = {
   kind: string;
   created_at: string;
 };
-type Badge = {
-  id: string;
-  member_id: string;
-  kind: "streak_7" | "area_specialist";
-  area_id: string | null;
-  earned_on: string;
-};
 type Extras = {
   trend: DashboardRow[];
   entries: Entry[];
   targets: (Targets & { member_id: string })[];
-  badges: Badge[];
 };
 
 // T-12: dashboard dasar dari view dashboard_daily (T-11), jadi angkanya sama
 // dengan perhitungan server. Butuh internet.
 // M-08: Moment of the Week & Month pilihan orang tua (dari perangkat, tanpa ART).
 // G-06: dasbor lengkap: Pesan Harian, grafik tren 14 hari, Progress Pribadi (pengganti
-// leaderboard: anak/ART melihat miliknya, Ayah/Ibu semua anggota), dan lencana terbaru.
+// leaderboard: anak/ART melihat miliknya, Ayah/Ibu semua anggota).
 export default function DashboardPage() {
   const t = useMessages();
-  const language = useLanguage();
   const session = useSession();
   const active = useActiveMember();
   const [me, setMe] = useState<MyFamily | null>();
@@ -59,7 +50,6 @@ export default function DashboardPage() {
       ),
     [],
   );
-  const areas = useLiveQuery(() => localDb.areas.toArray(), []);
 
   useEffect(() => {
     if (!session) return;
@@ -75,7 +65,7 @@ export default function DashboardPage() {
       .sort()[0];
     void (async () => {
       if (!navigator.onLine) return;
-      const [trend, ledger, goals, earned] = await Promise.all([
+      const [trend, ledger, goals] = await Promise.all([
         supabase
           .from("dashboard_daily")
           .select("member_id, due_date, total, approved, waiting, late, points")
@@ -88,17 +78,11 @@ export default function DashboardPage() {
         supabase
           .from("point_targets")
           .select("member_id, daily, weekly, monthly"),
-        supabase
-          .from("badges")
-          .select("id, member_id, kind, area_id, earned_on")
-          .order("earned_on", { ascending: false })
-          .limit(5),
       ]);
       setExtras({
         trend: trend.data ?? [],
         entries: ledger.data ?? [],
         targets: goals.data ?? [],
-        badges: earned.data ?? [],
       });
     })();
   }, [session]);
@@ -144,12 +128,6 @@ export default function DashboardPage() {
   const role = active?.role ?? me?.role;
   const memberId = active?.id ?? me?.memberId;
   const isParent = role === "father" || role === "mother";
-  const name = (id: string) =>
-    members?.find((m) => m.id === id)?.display_name ?? "";
-  const areaName = (id: string | null) => {
-    const area = areas?.find((a) => a.id === id);
-    return area ? (language === "en" ? area.name_en : area.name_id) : "";
-  };
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-6">
@@ -234,21 +212,6 @@ export default function DashboardPage() {
               </div>
             </>
           )}
-          <h2 className="font-medium">{t.latestBadges}</h2>
-          {extras.badges.length === 0 && (
-            <p className="text-sm opacity-70">{t.noBadges}</p>
-          )}
-          <ul className="flex flex-wrap gap-2">
-            {extras.badges.map((b) => (
-              <li
-                key={b.id}
-                className="rounded-full border border-amber-500 bg-amber-50 px-3 py-1 text-sm dark:bg-amber-950"
-              >
-                🏅 {name(b.member_id)} · {t[`badge_${b.kind}`]}
-                {b.area_id && ` · ${areaName(b.area_id)}`}
-              </li>
-            ))}
-          </ul>
         </>
       )}
     </main>

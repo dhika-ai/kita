@@ -11,7 +11,6 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/dasbor",
     "/poin",
     "/hadiah",
-    "/kalender",
     "/moments",
     "/pesan",
     "/tugas/baru",
@@ -28,7 +27,6 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/dasbor",
     "/poin",
     "/hadiah",
-    "/kalender",
     "/moments",
     "/pesan",
     "/tugas/baru",
@@ -48,7 +46,6 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
     "/dasbor",
     "/poin",
     "/hadiah",
-    "/kalender",
     "/moments",
     "/tugas/baru",
     "/notifikasi",
@@ -59,7 +56,6 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
     "/dasbor",
     "/poin",
     "/hadiah",
-    "/kalender",
     "/notifikasi",
     "/ganti",
   ]);
@@ -75,10 +71,10 @@ test("hanya ayah dan ibu yang melihat menu persetujuan", () => {
   assert.ok(!hrefs("art").includes("/persetujuan"));
 });
 
-test("semua peran melihat dasbor dan kalender", () => {
+test("semua peran melihat dasbor, kalender sudah dihapus (L-02)", () => {
   for (const role of ["father", "mother", "child", "art"] as const) {
     assert.ok(hrefs(role).includes("/dasbor"));
-    assert.ok(hrefs(role).includes("/kalender"));
+    assert.ok(!hrefs(role).includes("/kalender"));
   }
 });
 
