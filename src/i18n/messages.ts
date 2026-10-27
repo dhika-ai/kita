@@ -180,7 +180,7 @@ const id = {
   waitingApproval: "Menunggu persetujuan",
   wholeFamily: "Seluruh keluarga",
   pointsHint:
-    "Poin dihitung dari tugas yang disetujui, berlaku mulai besoknya.",
+    "Poin masuk saat tugas dicentang selesai, dan ditarik kembali kalau tugasnya ditolak.",
   telegram: "Telegram",
   telegramHint:
     "Hubungkan Telegram untuk menerima pengingat setiap pukul 07:00 dan 17:00.",
@@ -260,6 +260,8 @@ const id = {
   request_pending: "Menunggu persetujuan",
   request_approved: "Disetujui, poin dikurangi",
   request_rejected: "Ditolak",
+  trendTitle: "Tren 14 hari terakhir (% tugas disetujui)",
+  latestBadges: "Lencana terbaru",
 };
 
 const en: typeof id = {
@@ -442,7 +444,8 @@ const en: typeof id = {
   lateTasks: "Late tasks",
   waitingApproval: "Waiting for approval",
   wholeFamily: "Whole family",
-  pointsHint: "Points come from approved tasks and count from the next day.",
+  pointsHint:
+    "Points are added when a task is ticked done, and taken back if the task is rejected.",
   telegram: "Telegram",
   telegramHint:
     "Connect Telegram to get reminders every day at 07:00 and 17:00.",
@@ -523,6 +526,8 @@ const en: typeof id = {
   request_pending: "Waiting for approval",
   request_approved: "Approved, points deducted",
   request_rejected: "Rejected",
+  trendTitle: "Last 14 days (% tasks approved)",
+  latestBadges: "Latest badges",
 };
 
 export const messages = { id, en };
