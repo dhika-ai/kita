@@ -133,6 +133,14 @@ export type LocalMomentPick = Synced & {
   moment_id: string;
 };
 
+// Pesan Harian dari Ayah/Ibu (M-01, pengganti quote).
+export type LocalDailyMessage = Synced & {
+  author_id: string;
+  message_date: string;
+  body: string;
+  photo_path: string | null;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -148,6 +156,7 @@ export const localDb = new Dexie("kita") as Dexie & {
   inventory_items: EntityTable<LocalInventoryItem, "id">;
   moments: EntityTable<LocalMoment, "id">;
   moment_picks: EntityTable<LocalMomentPick, "id">;
+  daily_messages: EntityTable<LocalDailyMessage, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -184,4 +193,8 @@ localDb.version(6).stores({
 
 localDb.version(7).stores({
   moment_picks: "id",
+});
+
+localDb.version(8).stores({
+  daily_messages: "id, message_date",
 });

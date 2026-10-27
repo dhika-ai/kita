@@ -18,6 +18,7 @@ const pulledTables = {
   inventory_items: "*",
   moments: "*",
   moment_picks: "*",
+  daily_messages: "*",
 } as const;
 
 // Entri antrean untuk foto memakai nama tabel "storage/<bucket>" dan row { id: path, blob }.

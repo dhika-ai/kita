@@ -11,6 +11,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/dasbor",
     "/kalender",
     "/moments",
+    "/pesan",
     "/tugas/baru",
     "/persetujuan",
     "/inventaris",
@@ -24,6 +25,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/dasbor",
     "/kalender",
     "/moments",
+    "/pesan",
     "/tugas/baru",
     "/persetujuan",
     "/inventaris",
@@ -79,4 +81,11 @@ test("hanya ayah dan ibu yang melihat menu inventaris", () => {
 test("ART tidak melihat menu moments", () => {
   assert.ok(hrefs("child").includes("/moments"));
   assert.ok(!hrefs("art").includes("/moments"));
+});
+
+test("hanya ayah dan ibu yang melihat menu pesan harian", () => {
+  assert.ok(hrefs("father").includes("/pesan"));
+  assert.ok(hrefs("mother").includes("/pesan"));
+  assert.ok(!hrefs("child").includes("/pesan"));
+  assert.ok(!hrefs("art").includes("/pesan"));
 });
