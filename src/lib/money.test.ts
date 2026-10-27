@@ -5,6 +5,7 @@ import { formatRupiah, parseRupiah } from "./money.ts";
 test("format Rupiah dengan titik ribuan", () => {
   assert.equal(formatRupiah(1250000), "Rp\u00a01.250.000");
   assert.equal(formatRupiah(0), "Rp\u00a00");
+  assert.equal(formatRupiah(-400000), "−Rp\u00a0400.000");
 });
 
 test("isian nominal diterima dengan atau tanpa pemisah", () => {

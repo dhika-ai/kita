@@ -285,6 +285,9 @@ const id = {
   recentTransactions: "Transaksi terakhir",
   financeSetupFirst:
     "Tambahkan dulu minimal satu rekening dan satu pos untuk jenis transaksi ini.",
+  financeSummary: "Ringkasan",
+  netBalance: "Selisih",
+  overBudget: "Melebihi anggaran",
 };
 
 const en: typeof id = {
@@ -574,6 +577,9 @@ const en: typeof id = {
   recentTransactions: "Latest transactions",
   financeSetupFirst:
     "Add at least one account and one post for this transaction type first.",
+  financeSummary: "Summary",
+  netBalance: "Net",
+  overBudget: "Over budget by",
 };
 
 export const messages = { id, en };
