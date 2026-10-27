@@ -5,12 +5,22 @@ import { menuFor } from "./menu.ts";
 const hrefs = (role: Parameters<typeof menuFor>[0]) =>
   menuFor(role).map((item) => item.href);
 
-test("ayah dan ibu melihat menu anggota keluarga", () => {
-  assert.deepEqual(hrefs("father"), ["/", "/keluarga", "/ganti"]);
-  assert.deepEqual(hrefs("mother"), ["/", "/keluarga", "/ganti"]);
+test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
+  assert.deepEqual(hrefs("father"), [
+    "/",
+    "/keluarga",
+    "/master-data",
+    "/ganti",
+  ]);
+  assert.deepEqual(hrefs("mother"), [
+    "/",
+    "/keluarga",
+    "/master-data",
+    "/ganti",
+  ]);
 });
 
-test("anak dan ART tidak melihat menu anggota keluarga", () => {
+test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("child"), ["/", "/ganti"]);
   assert.deepEqual(hrefs("art"), ["/", "/ganti"]);
 });

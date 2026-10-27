@@ -26,6 +26,12 @@ const menu: MenuItem[] = [
     icon: "M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM1 21v-2a6 6 0 0 1 12 0v2zm14 0v-2a6 6 0 0 0-1.5-4A5 5 0 0 1 23 19v2z",
   },
   {
+    href: "/master-data",
+    label: "masterData",
+    roles: parents,
+    icon: "M4 6h16M4 12h16M4 18h10",
+  },
+  {
     href: "/ganti",
     label: "switchUser",
     roles: everyone,
