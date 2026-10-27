@@ -29,11 +29,29 @@ const pulledTables = {
 export const financeTables = ["accounts", "budget_posts", "transactions"];
 let financeAllowed = false;
 
-/** Dipanggil saat peran pemakai perangkat diketahui. */
-export function setFinanceAccess(allowed: boolean) {
-  if (allowed === financeAllowed) return;
+/**
+ * Dipanggil saat peran pemakai perangkat diketahui. Kalau bukan ayah/ibu (termasuk
+ * anak/ART yang sedang memakai HP orang tua lewat PIN), salinan data keuangan di
+ * perangkat dihapus (K-06). Antrean kirim tidak disentuh, supaya catatan orang tua
+ * yang belum terkirim tidak hilang; antrean tidak ditampilkan di layar mana pun.
+ */
+export async function setFinanceAccess(allowed: boolean) {
+  const changed = allowed !== financeAllowed;
   financeAllowed = allowed;
-  if (allowed) void sync();
+  if (allowed) {
+    if (changed) void sync();
+    return;
+  }
+  await localDb.transaction(
+    "rw",
+    [...financeTables.map((t) => localDb.table(t)), localDb.pullState],
+    async () => {
+      for (const table of financeTables) {
+        await localDb.table(table).clear();
+        await localDb.pullState.delete(table);
+      }
+    },
+  );
 }
 
 // Entri antrean untuk foto memakai nama tabel "storage/<bucket>" dan row { id: path, blob }.
@@ -112,6 +130,8 @@ async function pull(table: PulledTable) {
 
   const { data, error } = await query;
   if (error) throw error;
+  // Akses keuangan bisa dicabut selama permintaan berjalan (K-06).
+  if (financeTables.includes(table) && !financeAllowed) return;
   if (data.length === 0) return;
 
   const rows = data as unknown as { updated_at: string }[];

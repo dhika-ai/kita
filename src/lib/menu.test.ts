@@ -103,3 +103,10 @@ test("hanya ayah dan ibu yang melihat menu pesan harian", () => {
   assert.ok(!hrefs("child").includes("/pesan"));
   assert.ok(!hrefs("art").includes("/pesan"));
 });
+
+test("menu Keuangan hanya untuk ayah dan ibu (K-06)", () => {
+  assert.ok(hrefs("father").includes("/keuangan"));
+  assert.ok(hrefs("mother").includes("/keuangan"));
+  assert.ok(!hrefs("child").includes("/keuangan"));
+  assert.ok(!hrefs("art").includes("/keuangan"));
+});
