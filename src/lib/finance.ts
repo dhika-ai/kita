@@ -1,0 +1,50 @@
+// K-04: ringkasan keuangan satu bulan dari transaksi di perangkat.
+
+type Post = {
+  id: string;
+  name: string;
+  kind: "income" | "expense";
+  monthly_budget: number | null;
+  deleted_at: string | null;
+};
+type Transaction = {
+  kind: "income" | "expense";
+  amount: number;
+  post_id: string;
+  tx_date: string;
+  deleted_at: string | null;
+};
+
+/** `month` = "YYYY-MM". Pos dengan pengeluaran di atas anggaran ditandai `over`. */
+export function monthSummary(
+  transactions: Transaction[],
+  posts: Post[],
+  month: string,
+) {
+  const inMonth = transactions.filter(
+    (x) => !x.deleted_at && x.tx_date.startsWith(month),
+  );
+  const sum = (list: Transaction[]) => list.reduce((n, x) => n + x.amount, 0);
+  const income = sum(inMonth.filter((x) => x.kind === "income"));
+  const expense = sum(inMonth.filter((x) => x.kind === "expense"));
+  const rows = posts
+    .map((post) => {
+      const total = sum(inMonth.filter((x) => x.post_id === post.id));
+      const budget = post.kind === "expense" ? post.monthly_budget : null;
+      return {
+        post,
+        total,
+        budget,
+        over: budget !== null && total > budget,
+      };
+    })
+    // Pos yang dihapus tetap tampil kalau bulan itu ada transaksinya.
+    .filter((row) => !row.post.deleted_at || row.total > 0)
+    .sort(
+      (a, b) =>
+        a.post.kind.localeCompare(b.post.kind) ||
+        Number(b.over) - Number(a.over) ||
+        b.total - a.total,
+    );
+  return { income, expense, net: income - expense, rows };
+}

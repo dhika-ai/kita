@@ -5,12 +5,18 @@ import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { AccountList, PostList } from "./master-lists";
+import { Summary } from "./summary";
 import { Transactions } from "./transactions";
 
-const tabs = ["transactions", "financeAccounts", "budgetPosts"] as const;
+const tabs = [
+  "transactions",
+  "financeSummary",
+  "financeAccounts",
+  "budgetPosts",
+] as const;
 
 // Keuangan (Rilis 5), hanya untuk ayah dan ibu. K-02: rekening dan pos anggaran.
-// K-03: catat pemasukan dan pengeluaran.
+// K-03: catat pemasukan dan pengeluaran. K-04: ringkasan bulanan.
 // Disimpan di perangkat lalu tersinkron (F-10), jadi bisa dipakai saat offline.
 export default function FinancePage() {
   const t = useMessages();
@@ -52,6 +58,8 @@ export default function FinancePage() {
           familyId={me.familyId}
           memberId={active?.id ?? me.memberId}
         />
+      ) : tab === "financeSummary" ? (
+        <Summary />
       ) : tab === "financeAccounts" ? (
         <AccountList familyId={me.familyId} />
       ) : (
