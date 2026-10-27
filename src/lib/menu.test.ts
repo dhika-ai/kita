@@ -9,6 +9,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("father"), [
     "/",
     "/dasbor",
+    "/laporan",
     "/kalender",
     "/moments",
     "/pesan",
@@ -23,6 +24,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("mother"), [
     "/",
     "/dasbor",
+    "/laporan",
     "/kalender",
     "/moments",
     "/pesan",
@@ -40,6 +42,7 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("child"), [
     "/",
     "/dasbor",
+    "/laporan",
     "/kalender",
     "/moments",
     "/tugas/baru",
@@ -49,6 +52,7 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("art"), [
     "/",
     "/dasbor",
+    "/laporan",
     "/kalender",
     "/telegram",
     "/ganti",
