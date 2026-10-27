@@ -153,6 +153,12 @@ function TaskItem({
           <span className="text-sm opacity-70">
             {t[`status_${instance.status}`]}
             {template?.due_time && ` · ${template.due_time.slice(0, 5)}`}
+            {(instance.status === "done" || instance.status === "approved") &&
+              template && (
+                <strong className="ml-2 text-green-700">
+                  +{template.points} {t.points.toLowerCase()}
+                </strong>
+              )}
           </span>
           {instance.status === "open" && instance.rejection_reason && (
             <span className="text-sm text-red-600">

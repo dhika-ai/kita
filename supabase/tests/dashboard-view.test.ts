@@ -51,7 +51,7 @@ describe("T-11 view dashboard", { skip: skipReason }, () => {
         count(*) filter (where i.status = 'done') || ',' ||
         count(*) filter (where i.status = 'missed' or i.status = 'open') || ',' ||
         round(100.0 * count(*) filter (where i.status = 'approved') / count(*)) || ',' ||
-        coalesce(sum(t.points) filter (where i.status = 'approved' and i.counts_on <= current_date), 0)
+        coalesce(sum(t.points) filter (where i.status in ('approved', 'done')), 0)
       from public.task_instances i join public.task_templates t on t.id = i.template_id
       where i.assignee_id = '${childId}' and i.due_date = '${day}';`);
     assert.match(manual, /^6,3,1,2,50,\d+$/);
@@ -65,10 +65,11 @@ describe("T-11 view dashboard", { skip: skipReason }, () => {
     );
   });
 
-  test("poin hanya dari tugas disetujui yang sudah berlaku (H+1)", () => {
+  // G-01: poin langsung masuk saat dicentang (bukan lagi H+1 setelah disetujui).
+  test("poin dari tugas selesai dan disetujui, tanpa menunggu H+1", () => {
     const expected = db.admin(`
       select sum(t.points) from public.task_instances i join public.task_templates t on t.id = i.template_id
-      where i.assignee_id = '${childId}' and i.status = 'approved' and i.counts_on = '${day}'::date + 1;`);
+      where i.assignee_id = '${childId}' and i.status in ('approved', 'done');`);
     assert.equal(
       db.as(
         child,
