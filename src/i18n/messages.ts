@@ -288,6 +288,8 @@ const id = {
   financeSummary: "Ringkasan",
   netBalance: "Selisih",
   overBudget: "Melebihi anggaran",
+  financeReport: "Laporan keuangan",
+  total: "Total",
 };
 
 const en: typeof id = {
@@ -580,6 +582,8 @@ const en: typeof id = {
   financeSummary: "Summary",
   netBalance: "Net",
   overBudget: "Over budget by",
+  financeReport: "Finance report",
+  total: "Total",
 };
 
 export const messages = { id, en };

@@ -16,7 +16,7 @@ const columns = [
   "points",
 ] as const;
 
-const cell = (value: string | number) => {
+export const csvCell = (value: string | number) => {
   const text = String(value);
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 };
@@ -53,5 +53,5 @@ export function reportCsv(rows: DashboardRow[], members: Member[]) {
       t.points,
     ]);
   }
-  return lines.map((line) => line.map(cell).join(",")).join("\n") + "\n";
+  return lines.map((line) => line.map(csvCell).join(",")).join("\n") + "\n";
 }
