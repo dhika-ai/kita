@@ -275,6 +275,16 @@ const id = {
   monthlyBudgetHint: "Kosongkan kalau pos ini tidak dibatasi anggaran.",
   perMonth: "/bulan",
   invalidAmount: "Nominal harus angka bulat Rupiah, misalnya 150000.",
+  transactions: "Transaksi",
+  amount: "Nominal (Rp)",
+  budgetPost: "Pos",
+  financeAccount: "Rekening",
+  txDate: "Tanggal",
+  receiptPhoto: "Foto struk",
+  saveTransaction: "Simpan transaksi",
+  recentTransactions: "Transaksi terakhir",
+  financeSetupFirst:
+    "Tambahkan dulu minimal satu rekening dan satu pos untuk jenis transaksi ini.",
 };
 
 const en: typeof id = {
@@ -554,6 +564,16 @@ const en: typeof id = {
   monthlyBudgetHint: "Leave empty if this post has no budget limit.",
   perMonth: "/month",
   invalidAmount: "Amount must be a whole Rupiah number, e.g. 150000.",
+  transactions: "Transactions",
+  amount: "Amount (Rp)",
+  budgetPost: "Post",
+  financeAccount: "Account",
+  txDate: "Date",
+  receiptPhoto: "Receipt photo",
+  saveTransaction: "Save transaction",
+  recentTransactions: "Latest transactions",
+  financeSetupFirst:
+    "Add at least one account and one post for this transaction type first.",
 };
 
 export const messages = { id, en };
