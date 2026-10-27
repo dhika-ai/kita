@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { buttonClass, inputClass } from "@/components/auth-form";
+import { ProgressCard } from "@/components/progress-card";
 import { useLanguage, useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { todayWib } from "@/lib/dates";
 import { localDb } from "@/lib/local-db";
-import { periods, progressOf, type Targets } from "@/lib/progress";
+import { periods, type Targets } from "@/lib/progress";
 import { supabase } from "@/lib/supabase";
 import { useLiveQuery } from "@/lib/use-live-query";
 
@@ -154,44 +155,14 @@ export default function PointsPage() {
         <>
           <h2 className="font-medium">{t.progressTitle}</h2>
           {shownMembers.map((m) => (
-            <section
+            <ProgressCard
               key={m.id}
-              className="flex flex-col gap-2 rounded-md border p-3"
-            >
-              {isParent && (
-                <h3 className="text-sm font-medium">{m.display_name}</h3>
-              )}
-              {progressOf(
-                entries,
-                m.id,
-                today,
-                targets.find((g) => g.member_id === m.id),
-              ).map((p) => (
-                <div key={p.period} className="flex flex-col gap-1 text-sm">
-                  <div className="flex justify-between">
-                    <span>{t[`period_${p.period}`]}</span>
-                    <span>
-                      {p.target === null
-                        ? `${p.points} · ${t.noTarget}`
-                        : `${p.points}/${p.target} (${p.pct}%)`}
-                    </span>
-                  </div>
-                  {p.pct !== null && (
-                    <div
-                      role="progressbar"
-                      aria-label={t[`period_${p.period}`]}
-                      aria-valuenow={p.pct}
-                      className="h-2 rounded bg-black/10 dark:bg-white/20"
-                    >
-                      <div
-                        className="h-2 rounded bg-green-600"
-                        style={{ width: `${p.pct}%` }}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </section>
+              entries={entries}
+              memberId={m.id}
+              today={today}
+              targets={targets.find((g) => g.member_id === m.id)}
+              title={isParent ? m.display_name : undefined}
+            />
           ))}
         </>
       )}
