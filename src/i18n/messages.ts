@@ -205,6 +205,15 @@ const id = {
   suggestions: "Saran",
   pick: "Pilih",
   picked: "Terpilih",
+  dailyMessage: "Pesan Harian",
+  dailyMessageHint:
+    "Tulis nilai atau fokus keluarga hari ini. Semua anggota keluarga bisa membacanya di Beranda.",
+  messageBody: "Pesan",
+  photoOptional: "Foto (opsional)",
+  sendMessage: "Simpan pesan",
+  messageSaved: "Pesan tersimpan. Akan terkirim otomatis saat online.",
+  recentMessages: "Pesan terakhir",
+  noMessages: "Belum ada pesan.",
 };
 
 const en: typeof id = {
@@ -413,6 +422,15 @@ const en: typeof id = {
   suggestions: "Suggestions",
   pick: "Pick",
   picked: "Picked",
+  dailyMessage: "Daily Message",
+  dailyMessageHint:
+    "Write the family's value or focus for today. Everyone in the family can read it on Home.",
+  messageBody: "Message",
+  photoOptional: "Photo (optional)",
+  sendMessage: "Save message",
+  messageSaved: "Message saved. It will upload automatically when online.",
+  recentMessages: "Recent messages",
+  noMessages: "No messages yet.",
 };
 
 export const messages = { id, en };
