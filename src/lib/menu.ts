@@ -32,6 +32,12 @@ const menu: MenuItem[] = [
     icon: "M4 5h16v16H4zM4 10h16M8 3v4m8-4v4",
   },
   {
+    href: "/moments",
+    label: "moments",
+    roles: ["father", "mother", "child"],
+    icon: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  },
+  {
     href: "/tugas/baru",
     label: "newTask",
     roles: ["father", "mother", "child"],

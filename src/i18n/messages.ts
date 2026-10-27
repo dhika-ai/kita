@@ -190,6 +190,16 @@ const id = {
   telegramCodeHint: "Atau kirim pesan ini ke bot KITA (berlaku 15 menit):",
   reminderMorning: "Pengingat pagi (07:00)",
   reminderEvening: "Pengingat sore (17:00)",
+  moments: "Moments",
+  momentsHint:
+    "Foto dan cerita hari ini. Hanya keluarga (tanpa ART) yang bisa melihat.",
+  journal: "Jurnal",
+  saveMoment: "Simpan moment",
+  momentSaved: "Tersimpan. Akan terkirim otomatis saat online.",
+  momentEmpty: "Isi jurnal atau pilih foto dulu.",
+  todayMoments: "Moment hari ini",
+  noMoments: "Belum ada moment.",
+  noAccess: "Halaman ini tidak tersedia untuk peranmu.",
 };
 
 const en: typeof id = {
@@ -383,6 +393,16 @@ const en: typeof id = {
     "Or send this message to the KITA bot (valid for 15 minutes):",
   reminderMorning: "Morning reminder (07:00)",
   reminderEvening: "Afternoon reminder (17:00)",
+  moments: "Moments",
+  momentsHint:
+    "Today's photos and stories. Only family (not household staff) can see them.",
+  journal: "Journal",
+  saveMoment: "Save moment",
+  momentSaved: "Saved. It will upload automatically when online.",
+  momentEmpty: "Write a journal entry or pick a photo first.",
+  todayMoments: "Today's moments",
+  noMoments: "No moments yet.",
+  noAccess: "This page is not available for your role.",
 };
 
 export const messages = { id, en };

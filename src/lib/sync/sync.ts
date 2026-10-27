@@ -16,13 +16,38 @@ const pulledTables = {
   task_instances: "*",
   task_completions: "*",
   inventory_items: "*",
+  moments: "*",
 } as const;
+
+// Entri antrean untuk foto memakai nama tabel "storage/<bucket>" dan row { id: path, blob }.
+const storagePrefix = "storage/";
 
 // Tabel yang hanya ditambah, tidak pernah diubah: kiriman ulang cukup diabaikan
 // (ON CONFLICT DO NOTHING), jadi tidak butuh izin update.
 const appendOnly = new Set(["task_completions"]);
 
 type PulledTable = keyof typeof pulledTables;
+
+/**
+ * Memasukkan foto ke antrean kirim (M-06), supaya foto yang diambil saat offline
+ * terunggah setelah online. Panggil sebelum saveLocal untuk baris yang memakai
+ * path ini, jadi fotonya terkirim lebih dulu.
+ */
+export async function queuePhoto(bucket: string, path: string, blob: Blob) {
+  await localDb.outbox.add({
+    table: storagePrefix + bucket,
+    row: { id: path, blob },
+  });
+}
+
+/** Foto yang masih menunggu diunggah, supaya bisa ditampilkan dari perangkat. */
+export async function pendingPhoto(path: string) {
+  const entries = await localDb.outbox.toArray();
+  const entry = entries.find(
+    (e) => e.table.startsWith(storagePrefix) && e.row.id === path,
+  );
+  return entry?.row.blob as Blob | undefined;
+}
 
 /**
  * Menyimpan perubahan di perangkat dan memasukkannya ke antrean kirim.
@@ -44,6 +69,14 @@ async function push() {
       remove: (seq) => localDb.outbox.delete(seq),
     },
     async ({ table, row }) => {
+      if (table.startsWith(storagePrefix)) {
+        const { error } = await supabase.storage
+          .from(table.slice(storagePrefix.length))
+          .upload(row.id, row.blob as Blob, { contentType: "image/jpeg" });
+        // Sudah ada = kiriman sebelumnya berhasil tetapi entrinya belum terhapus.
+        if (error && !/exists|duplicate/i.test(error.message)) throw error;
+        return;
+      }
       const { error } = await supabase
         .from(table)
         .upsert(row, { ignoreDuplicates: appendOnly.has(table) });
