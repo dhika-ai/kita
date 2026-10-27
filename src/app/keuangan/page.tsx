@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
@@ -17,7 +16,7 @@ const tabs = [
 ] as const;
 
 // Keuangan (Rilis 5), hanya untuk ayah dan ibu. K-02: rekening dan pos anggaran.
-// K-03: catat pemasukan dan pengeluaran. K-04: ringkasan bulanan. K-05: link laporan.
+// K-03: catat pemasukan dan pengeluaran. K-04: ringkasan bulanan.
 // Disimpan di perangkat lalu tersinkron (F-10), jadi bisa dipakai saat offline.
 export default function FinancePage() {
   const t = useMessages();
@@ -39,12 +38,7 @@ export default function FinancePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-6">
-      <div className="flex items-baseline justify-between gap-2">
-        <h1 className="text-2xl font-bold">{t.finance}</h1>
-        <Link href="/keuangan/laporan" className="text-sm underline">
-          {t.financeReport}
-        </Link>
-      </div>
+      <h1 className="text-2xl font-bold">{t.finance}</h1>
       <div role="tablist" className="flex flex-wrap gap-1">
         {tabs.map((name) => (
           <button

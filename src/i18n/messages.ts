@@ -215,11 +215,6 @@ const id = {
   recentMessages: "Pesan terakhir",
   noMessages: "Belum ada pesan.",
   lastMessage: "Pesan terakhir dari Ayah/Ibu",
-  report: "Laporan",
-  member: "Anggota",
-  downloadCsv: "Unduh CSV",
-  downloadPdf: "Unduh PDF",
-  pdfHint: 'Unduh PDF membuka jendela cetak; pilih "Simpan sebagai PDF".',
   randomCheck: "Cek acak (3)",
   showAll: "Tampilkan semua",
   pointsPage: "Poin",
@@ -288,8 +283,6 @@ const id = {
   financeSummary: "Ringkasan",
   netBalance: "Selisih",
   overBudget: "Melebihi anggaran",
-  financeReport: "Laporan keuangan",
-  total: "Total",
 };
 
 const en: typeof id = {
@@ -509,11 +502,6 @@ const en: typeof id = {
   recentMessages: "Recent messages",
   noMessages: "No messages yet.",
   lastMessage: "Latest message from Dad/Mum",
-  report: "Report",
-  member: "Member",
-  downloadCsv: "Download CSV",
-  downloadPdf: "Download PDF",
-  pdfHint: 'Download PDF opens the print window; choose "Save as PDF".',
   randomCheck: "Random check (3)",
   showAll: "Show all",
   pointsPage: "Points",
@@ -582,8 +570,6 @@ const en: typeof id = {
   financeSummary: "Summary",
   netBalance: "Net",
   overBudget: "Over budget by",
-  financeReport: "Finance report",
-  total: "Total",
 };
 
 export const messages = { id, en };
