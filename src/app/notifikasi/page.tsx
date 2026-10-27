@@ -8,10 +8,12 @@ import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { localDb } from "@/lib/local-db";
 import { pushSupported, subscribePush } from "@/lib/push";
 import { supabase } from "@/lib/supabase";
+import { sync } from "@/lib/sync/sync";
 import { useLiveQuery } from "@/lib/use-live-query";
 
 // P-01: HP ini berlangganan push notification untuk anggota yang dipilih. Ayah/ibu
 // bisa memilih anggota lain, jadi pengingat si kecil ikut masuk ke HP orang tua.
+// P-02: pengingat pagi dan sore bisa dimatikan masing-masing (sama seperti R-05).
 export default function NotificationsPage() {
   const t = useMessages();
   const language = useLanguage();
@@ -59,6 +61,21 @@ export default function NotificationsPage() {
 
   if (!session || !me || !memberId) return null;
   const selected = chosen ?? [memberId];
+  const self = members?.find((m) => m.id === memberId);
+
+  async function setMuted(slot: "morning" | "evening", muted: boolean) {
+    if (!navigator.onLine) return setError(t.needsOnline);
+    setBusy(true);
+    setError("");
+    const { error } = await supabase.rpc("set_telegram_mute", {
+      member_id: memberId,
+      slot,
+      muted,
+    });
+    if (error) setError(error.message);
+    await sync();
+    setBusy(false);
+  }
 
   async function save() {
     if (!navigator.onLine) return setError(t.needsOnline);
@@ -126,6 +143,21 @@ export default function NotificationsPage() {
           >
             {t.enableNotifications}
           </button>
+          {self && (
+            <div className="flex flex-col gap-2 rounded-md border p-3">
+              {(["morning", "evening"] as const).map((slot) => (
+                <label key={slot} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={!self[`telegram_mute_${slot}`]}
+                    disabled={busy}
+                    onChange={(event) => setMuted(slot, !event.target.checked)}
+                  />
+                  {slot === "morning" ? t.reminderMorning : t.reminderEvening}
+                </label>
+              ))}
+            </div>
+          )}
         </>
       )}
       {status && <p className="text-sm">{status}</p>}
