@@ -40,6 +40,17 @@ const id = {
   copy: "Salin",
   copied: "Tersalin",
   back: "Kembali",
+  switchUser: "Ganti pengguna",
+  whoIsUsing: "Siapa yang memakai?",
+  pin: "PIN",
+  pinHint: "4 sampai 6 angka",
+  savePin: "Simpan PIN",
+  pinSaved: "PIN tersimpan",
+  noPin: "Belum ada PIN",
+  pinLocked: "PIN terkunci",
+  wrongPin: "PIN salah. Setelah 5 kali salah, PIN terkunci.",
+  ownerPassword: "Kata sandi akun",
+  enter: "Masuk",
 };
 
 const en: typeof id = {
@@ -83,6 +94,17 @@ const en: typeof id = {
   copy: "Copy",
   copied: "Copied",
   back: "Back",
+  switchUser: "Switch user",
+  whoIsUsing: "Who is using KITA?",
+  pin: "PIN",
+  pinHint: "4 to 6 digits",
+  savePin: "Save PIN",
+  pinSaved: "PIN saved",
+  noPin: "No PIN yet",
+  pinLocked: "PIN locked",
+  wrongPin: "Wrong PIN. After 5 wrong tries the PIN is locked.",
+  ownerPassword: "Account password",
+  enter: "Enter",
 };
 
 export const messages = { id, en };

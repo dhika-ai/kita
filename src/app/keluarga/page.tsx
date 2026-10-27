@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { buttonClass, Field, inputClass } from "@/components/auth-form";
 import { useMessages } from "@/i18n/language";
+import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily, type Role } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -14,6 +15,8 @@ type Member = {
   display_name: string;
   role: Role;
   invite_code: string | null;
+  has_pin: boolean;
+  pin_locked: boolean;
 };
 
 export default function FamilyPage() {
@@ -24,14 +27,19 @@ export default function FamilyPage() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Saat anak atau ART memakai perangkat dengan PIN, halaman ini hanya untuk dilihat.
+  const active = useActiveMember();
+  const myRole = active?.role ?? me?.role;
+  const myId = active?.id ?? me?.memberId;
+  const isParent = myRole === "father" || myRole === "mother";
   // Hanya ayah (pemilik akun keluarga) yang menambah anggota dan mengatur peran.
-  const isFather = me?.role === "father";
+  const isFather = myRole === "father";
 
   const load = useCallback(
     () =>
       supabase
         .from("members")
-        .select("id, display_name, role, invite_code")
+        .select("id, display_name, role, invite_code, has_pin, pin_locked")
         .is("deleted_at", null)
         .order("created_at")
         .then(({ data, error }) => {
@@ -97,9 +105,9 @@ export default function FamilyPage() {
             <div className="flex items-center justify-between gap-2">
               <span className="font-medium">
                 {member.display_name}
-                {member.id === me?.memberId && ` (${t.you})`}
+                {member.id === myId && ` (${t.you})`}
               </span>
-              {isFather && member.id !== me?.memberId ? (
+              {isFather && member.id !== myId ? (
                 <select
                   aria-label={`${t.role} ${member.display_name}`}
                   value={member.role}
@@ -124,6 +132,19 @@ export default function FamilyPage() {
                 <span className="text-sm">{t[`role_${member.role}`]}</span>
               )}
             </div>
+            {isParent && (member.role === "child" || member.role === "art") && (
+              <PinForm
+                member={member}
+                onSave={(pin) =>
+                  run(
+                    supabase.rpc("set_member_pin", {
+                      member_id: member.id,
+                      pin,
+                    }),
+                  )
+                }
+              />
+            )}
             {isFather && member.invite_code && (
               <InviteLink code={member.invite_code} />
             )}
@@ -160,6 +181,57 @@ export default function FamilyPage() {
         </form>
       )}
     </main>
+  );
+}
+
+function PinForm({
+  member,
+  onSave,
+}: {
+  member: Member;
+  onSave: (pin: string) => Promise<boolean>;
+}) {
+  const t = useMessages();
+  const [saved, setSaved] = useState(false);
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const ok = await onSave(String(new FormData(formElement).get("pin")));
+    setSaved(ok);
+    if (ok) formElement.reset();
+  }
+
+  return (
+    <form onSubmit={submit} className="flex flex-col gap-1 text-sm">
+      <span>
+        {t.pin}:{" "}
+        {member.pin_locked ? (
+          <strong className="text-red-600">{t.pinLocked}</strong>
+        ) : member.has_pin ? (
+          "••••"
+        ) : (
+          t.noPin
+        )}
+        {saved && ` · ${t.pinSaved}`}
+      </span>
+      <div className="flex gap-2">
+        <input
+          name="pin"
+          type="password"
+          inputMode="numeric"
+          pattern="[0-9]{4,6}"
+          required
+          autoComplete="new-password"
+          aria-label={`${t.pin} ${member.display_name}`}
+          placeholder={t.pinHint}
+          className={`${inputClass} min-w-0 flex-1 text-sm`}
+        />
+        <button type="submit" className="rounded-md border px-3">
+          {t.savePin}
+        </button>
+      </div>
+    </form>
   );
 }
 
