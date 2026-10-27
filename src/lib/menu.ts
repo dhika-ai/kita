@@ -38,6 +38,12 @@ const menu: MenuItem[] = [
     icon: "M4 12l5 5L20 6",
   },
   {
+    href: "/inventaris",
+    label: "inventory",
+    roles: parents,
+    icon: "M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10",
+  },
+  {
     href: "/keluarga",
     label: "familyMembers",
     roles: parents,

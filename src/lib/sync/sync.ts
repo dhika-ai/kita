@@ -15,6 +15,7 @@ const pulledTables = {
   task_templates: "*",
   task_instances: "*",
   task_completions: "*",
+  inventory_items: "*",
 } as const;
 
 // Tabel yang hanya ditambah, tidak pernah diubah: kiriman ulang cukup diabaikan

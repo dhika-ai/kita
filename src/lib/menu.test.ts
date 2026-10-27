@@ -11,6 +11,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/kalender",
     "/tugas/baru",
     "/persetujuan",
+    "/inventaris",
     "/keluarga",
     "/master-data",
     "/ganti",
@@ -20,6 +21,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
     "/kalender",
     "/tugas/baru",
     "/persetujuan",
+    "/inventaris",
     "/keluarga",
     "/master-data",
     "/ganti",
@@ -45,4 +47,10 @@ test("semua peran melihat kalender", () => {
   for (const role of ["father", "mother", "child", "art"] as const) {
     assert.ok(hrefs(role).includes("/kalender"));
   }
+});
+
+test("hanya ayah dan ibu yang melihat menu inventaris", () => {
+  assert.ok(hrefs("mother").includes("/inventaris"));
+  assert.ok(!hrefs("child").includes("/inventaris"));
+  assert.ok(!hrefs("art").includes("/inventaris"));
 });
