@@ -17,6 +17,7 @@ const pulledTables = {
   task_completions: "*",
   inventory_items: "*",
   moments: "*",
+  moment_picks: "*",
 } as const;
 
 // Entri antrean untuk foto memakai nama tabel "storage/<bucket>" dan row { id: path, blob }.

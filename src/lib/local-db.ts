@@ -126,6 +126,13 @@ export type LocalMoment = Synced & {
   photo_path: string | null;
 };
 
+// Moment of the Week & Month (M-08): id = "<family_id>:<period>:<period_start>".
+export type LocalMomentPick = Synced & {
+  period: "week" | "month";
+  period_start: string;
+  moment_id: string;
+};
+
 /** Waktu `updated_at` terakhir yang sudah ditarik, per tabel. */
 type PullState = { table: string; pulledUntil: string };
 
@@ -140,6 +147,7 @@ export const localDb = new Dexie("kita") as Dexie & {
   task_completions: EntityTable<LocalTaskCompletion, "id">;
   inventory_items: EntityTable<LocalInventoryItem, "id">;
   moments: EntityTable<LocalMoment, "id">;
+  moment_picks: EntityTable<LocalMomentPick, "id">;
   outbox: EntityTable<OutboxEntry, "seq">;
   pullState: EntityTable<PullState, "table">;
 };
@@ -172,4 +180,8 @@ localDb.version(5).stores({
 
 localDb.version(6).stores({
   moments: "id, moment_date",
+});
+
+localDb.version(7).stores({
+  moment_picks: "id",
 });
