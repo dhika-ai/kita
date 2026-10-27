@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex flex-1 flex-col md:flex-row">
       <nav
         aria-label={t.mainMenu}
-        className="fixed inset-x-0 bottom-0 z-10 flex border-t bg-background pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-dvh md:w-56 md:flex-col md:gap-1 md:border-t-0 md:border-r md:p-3"
+        className="fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t bg-background pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-dvh md:w-56 md:flex-col md:gap-1 md:border-t-0 md:border-r md:p-3"
       >
         <span className="hidden px-3 py-2 text-xl font-bold md:block">
           KITA
@@ -42,7 +42,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             key={item.href}
             href={item.href}
             aria-current={pathname === item.href ? "page" : undefined}
-            className="flex flex-1 flex-col items-center gap-1 py-2 text-xs opacity-70 aria-[current=page]:font-semibold aria-[current=page]:opacity-100 md:flex-none md:flex-row md:gap-3 md:rounded-md md:px-3 md:text-sm md:aria-[current=page]:bg-foreground/10"
+            className="flex min-w-18 flex-1 flex-col items-center gap-1 py-2 text-center text-xs md:text-left opacity-70 aria-[current=page]:font-semibold aria-[current=page]:opacity-100 md:flex-none md:flex-row md:gap-3 md:rounded-md md:px-3 md:text-sm md:aria-[current=page]:bg-foreground/10"
           >
             <svg
               viewBox="0 0 24 24"

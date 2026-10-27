@@ -26,6 +26,12 @@ const menu: MenuItem[] = [
     icon: "M12 5v14M5 12h14",
   },
   {
+    href: "/persetujuan",
+    label: "approvals",
+    roles: parents,
+    icon: "M4 12l5 5L20 6",
+  },
+  {
     href: "/keluarga",
     label: "familyMembers",
     roles: parents,

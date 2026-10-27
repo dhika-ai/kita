@@ -9,6 +9,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("father"), [
     "/",
     "/tugas/baru",
+    "/persetujuan",
     "/keluarga",
     "/master-data",
     "/ganti",
@@ -16,6 +17,7 @@ test("ayah dan ibu melihat menu anggota keluarga dan master data", () => {
   assert.deepEqual(hrefs("mother"), [
     "/",
     "/tugas/baru",
+    "/persetujuan",
     "/keluarga",
     "/master-data",
     "/ganti",
@@ -29,4 +31,10 @@ test("anak dan ART tidak melihat menu anggota keluarga dan master data", () => {
 
 test("ART tidak melihat menu tambah tugas", () => {
   assert.ok(!hrefs("art").includes("/tugas/baru"));
+});
+
+test("hanya ayah dan ibu yang melihat menu persetujuan", () => {
+  assert.ok(hrefs("father").includes("/persetujuan"));
+  assert.ok(!hrefs("child").includes("/persetujuan"));
+  assert.ok(!hrefs("art").includes("/persetujuan"));
 });

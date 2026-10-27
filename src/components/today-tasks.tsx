@@ -154,6 +154,11 @@ function TaskItem({
             {t[`status_${instance.status}`]}
             {template?.due_time && ` · ${template.due_time.slice(0, 5)}`}
           </span>
+          {instance.status === "open" && instance.rejection_reason && (
+            <span className="text-sm text-red-600">
+              {t.rejectedBecause}: {instance.rejection_reason}
+            </span>
+          )}
         </span>
         {canTick && !open && (
           <button
