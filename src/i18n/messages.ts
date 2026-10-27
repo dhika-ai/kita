@@ -171,6 +171,16 @@ const id = {
   lowStock: "Stok rendah",
   addOne: "Tambah satu",
   useOne: "Pakai satu",
+  dashboard: "Dasbor",
+  period_day: "Hari ini",
+  period_week: "Minggu ini",
+  period_month: "Bulan ini",
+  completion: "Selesai (disetujui)",
+  lateTasks: "Tugas terlambat",
+  waitingApproval: "Menunggu persetujuan",
+  wholeFamily: "Seluruh keluarga",
+  pointsHint:
+    "Poin dihitung dari tugas yang disetujui, berlaku mulai besoknya.",
 };
 
 const en: typeof id = {
@@ -345,6 +355,15 @@ const en: typeof id = {
   lowStock: "Low stock",
   addOne: "Add one",
   useOne: "Use one",
+  dashboard: "Dashboard",
+  period_day: "Today",
+  period_week: "This week",
+  period_month: "This month",
+  completion: "Done (approved)",
+  lateTasks: "Late tasks",
+  waitingApproval: "Waiting for approval",
+  wholeFamily: "Whole family",
+  pointsHint: "Points come from approved tasks and count from the next day.",
 };
 
 export const messages = { id, en };

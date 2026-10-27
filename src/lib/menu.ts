@@ -20,6 +20,12 @@ const menu: MenuItem[] = [
     icon: "M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z",
   },
   {
+    href: "/dasbor",
+    label: "dashboard",
+    roles: everyone,
+    icon: "M4 20V10m6 10V4m6 16v-7m4 7H2",
+  },
+  {
     href: "/kalender",
     label: "calendar",
     roles: everyone,
