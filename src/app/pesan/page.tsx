@@ -6,13 +6,12 @@ import { StoragePhoto } from "@/components/storage-photo";
 import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
+import { messageBucket } from "@/lib/daily-message";
 import { todayWib } from "@/lib/dates";
 import { localDb } from "@/lib/local-db";
 import { queueCompressedPhoto } from "@/lib/photo";
 import { saveLocal } from "@/lib/sync/sync";
 import { useLiveQuery } from "@/lib/use-live-query";
-
-const messageBucket = "message-photos";
 
 // M-02: Ayah/Ibu menulis Pesan Harian (nilai atau fokus hari ini), boleh dengan foto.
 // Disimpan di perangkat dulu lalu dikirim lewat antrean sync, jadi bisa dipakai offline.

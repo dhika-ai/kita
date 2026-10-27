@@ -214,6 +214,7 @@ const id = {
   messageSaved: "Pesan tersimpan. Akan terkirim otomatis saat online.",
   recentMessages: "Pesan terakhir",
   noMessages: "Belum ada pesan.",
+  lastMessage: "Pesan terakhir dari Ayah/Ibu",
 };
 
 const en: typeof id = {
@@ -431,6 +432,7 @@ const en: typeof id = {
   messageSaved: "Message saved. It will upload automatically when online.",
   recentMessages: "Recent messages",
   noMessages: "No messages yet.",
+  lastMessage: "Latest message from Dad/Mum",
 };
 
 export const messages = { id, en };
