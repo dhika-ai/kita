@@ -197,7 +197,6 @@ const id = {
   saveMoment: "Simpan moment",
   momentSaved: "Tersimpan. Akan terkirim otomatis saat online.",
   momentEmpty: "Isi jurnal atau pilih foto dulu.",
-  todayMoments: "Moment hari ini",
   noMoments: "Belum ada moment.",
   noAccess: "Halaman ini tidak tersedia untuk peranmu.",
 };
@@ -400,7 +399,6 @@ const en: typeof id = {
   saveMoment: "Save moment",
   momentSaved: "Saved. It will upload automatically when online.",
   momentEmpty: "Write a journal entry or pick a photo first.",
-  todayMoments: "Today's moments",
   noMoments: "No moments yet.",
   noAccess: "This page is not available for your role.",
 };

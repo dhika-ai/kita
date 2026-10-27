@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { buttonClass, inputClass } from "@/components/auth-form";
 import { StoragePhoto } from "@/components/storage-photo";
-import { useMessages } from "@/i18n/language";
+import { useLanguage, useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
+import { datesIn, shift, type CalendarView } from "@/lib/calendar";
 import { todayWib } from "@/lib/dates";
 import { localDb } from "@/lib/local-db";
 import { queueCompressedPhoto } from "@/lib/photo";
@@ -13,12 +14,17 @@ import { saveLocal } from "@/lib/sync/sync";
 import { useLiveQuery } from "@/lib/use-live-query";
 
 const bucket = "moment-photos";
+const views: CalendarView[] = ["day", "week", "month"];
 
 // M-06: tulis jurnal dan/atau unggah foto hari ini. Semuanya disimpan di perangkat
 // dulu lalu dikirim lewat antrean sync, jadi tetap bisa dipakai saat offline.
 // ART tidak punya akses (dijaga juga di database, M-05).
+// M-07: feed semua moment keluarga per hari, minggu, atau bulan.
 export default function MomentsPage() {
   const t = useMessages();
+  const language = useLanguage();
+  const [view, setView] = useState<CalendarView>("day");
+  const [picked, setAnchor] = useState<string>();
   const session = useSession();
   const active = useActiveMember();
   const [me, setMe] = useState<MyFamily | null>();
@@ -30,17 +36,15 @@ export default function MomentsPage() {
     loadMyFamily(session.user).then(setMe, () => setMe(null));
   }, [session]);
 
-  const data = useLiveQuery(async () => {
-    const today = todayWib();
-    return {
-      moments: (
-        await localDb.moments.where("moment_date").equals(today).toArray()
-      )
+  const data = useLiveQuery(
+    async () => ({
+      moments: (await localDb.moments.toArray())
         .filter((m) => !m.deleted_at)
         .sort((a, b) => b.created_at.localeCompare(a.created_at)),
       members: await localDb.members.toArray(),
-    };
-  }, []);
+    }),
+    [],
+  );
 
   const role = active?.role ?? me?.role;
   const memberId = active?.id ?? me?.memberId;
@@ -76,6 +80,17 @@ export default function MomentsPage() {
     setBusy(false);
   }
 
+  const today = todayWib();
+  const anchor = picked ?? today;
+  const dates = datesIn(view, anchor);
+  const shown = (data?.moments ?? []).filter((m) =>
+    dates.includes(m.moment_date),
+  );
+  const dayLabel = (date: string) =>
+    new Date(`${date}T00:00:00Z`).toLocaleDateString(
+      language === "en" ? "en-GB" : "id-ID",
+      { timeZone: "UTC", weekday: "long", day: "numeric", month: "long" },
+    );
   const name = (id: string) =>
     data?.members.find((m) => m.id === id)?.display_name ?? "";
 
@@ -98,21 +113,75 @@ export default function MomentsPage() {
         {status && <p className="text-sm">{status}</p>}
       </form>
 
-      <h2 className="font-medium">{t.todayMoments}</h2>
-      {data?.moments.length === 0 && (
-        <p className="opacity-70">{t.noMoments}</p>
-      )}
-      <ul className="flex flex-col gap-3">
-        {data?.moments.map((m) => (
-          <li key={m.id} className="flex flex-col gap-2 rounded-md border p-3">
-            <span className="text-sm font-medium">{name(m.member_id)}</span>
-            {m.photo_path && (
-              <StoragePhoto bucket={bucket} path={m.photo_path} />
-            )}
-            {m.journal && <p className="whitespace-pre-wrap">{m.journal}</p>}
-          </li>
+      <div className="flex gap-1">
+        {views.map((v) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => setView(v)}
+            className={`rounded-md border px-3 py-1 text-sm ${v === view ? "bg-foreground text-background" : ""}`}
+          >
+            {t[`view_${v}`]}
+          </button>
         ))}
-      </ul>
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => setAnchor(shift(view, anchor, -1))}
+          className="rounded-md border px-3 py-1 text-sm"
+          aria-label={t.previous}
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          onClick={() => setAnchor(today)}
+          className="rounded-md border px-3 py-1 text-sm"
+        >
+          {t.goToday}
+        </button>
+        <button
+          type="button"
+          onClick={() => setAnchor(shift(view, anchor, 1))}
+          className="rounded-md border px-3 py-1 text-sm"
+          aria-label={t.next}
+        >
+          ›
+        </button>
+        <span className="ml-2 text-sm">
+          {dates[0]}
+          {dates.length > 1 && ` – ${dates[dates.length - 1]}`}
+        </span>
+      </div>
+      {shown.length === 0 && <p className="opacity-70">{t.noMoments}</p>}
+      {[...dates].reverse().map((date) => {
+        const day = shown.filter((m) => m.moment_date === date);
+        if (day.length === 0) return null;
+        return (
+          <section key={date} className="flex flex-col gap-2">
+            <h2 className="font-medium">{dayLabel(date)}</h2>
+            <ul className="flex flex-col gap-3">
+              {day.map((m) => (
+                <li
+                  key={m.id}
+                  className="flex flex-col gap-2 rounded-md border p-3"
+                >
+                  <span className="text-sm font-medium">
+                    {name(m.member_id)}
+                  </span>
+                  {m.photo_path && (
+                    <StoragePhoto bucket={bucket} path={m.photo_path} />
+                  )}
+                  {m.journal && (
+                    <p className="whitespace-pre-wrap">{m.journal}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
     </main>
   );
 }
