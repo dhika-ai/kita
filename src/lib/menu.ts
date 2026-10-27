@@ -39,12 +39,6 @@ const menu: MenuItem[] = [
     icon: "M4 11h16v10H4zM2 7h20v4H2zm10 0v14M12 7c-2-4-6-4-6-1s6 1 6 1c0 0 6 2 6-1s-4-3-6 1",
   },
   {
-    href: "/kalender",
-    label: "calendar",
-    roles: everyone,
-    icon: "M4 5h16v16H4zM4 10h16M8 3v4m8-4v4",
-  },
-  {
     href: "/moments",
     label: "moments",
     roles: ["father", "mother", "child"],

@@ -1,13 +1,7 @@
-// T-09: rentang tanggal kalender dan jadwal template (sama dengan
-// private.generate_task_instances di database). Tanggal selalu "YYYY-MM-DD".
+// Rentang tanggal harian/mingguan/bulanan (dipakai Dasbor, Moments, Progress Pribadi).
+// Tanggal selalu "YYYY-MM-DD". Halaman Kalender (T-09) dihapus di L-02.
 
 export type CalendarView = "day" | "week" | "month";
-
-type Schedule = {
-  recurrence: "daily" | "weekly" | "monthly" | null;
-  weekdays: number[] | null;
-  month_day: number | null;
-};
 
 const toDate = (date: string) => new Date(`${date}T00:00:00Z`);
 const toString = (date: Date) => date.toISOString().slice(0, 10);
@@ -42,20 +36,4 @@ export function shift(view: CalendarView, anchor: string, step: number) {
   const d = toDate(`${anchor.slice(0, 8)}01`);
   d.setUTCMonth(d.getUTCMonth() + step);
   return toString(d);
-}
-
-/** Apakah template rutin dijadwalkan di tanggal ini. */
-export function scheduledOn(template: Schedule, date: string) {
-  const d = toDate(date);
-  if (template.recurrence === "daily") return true;
-  if (template.recurrence === "weekly") {
-    return (template.weekdays ?? []).includes(d.getUTCDay() || 7);
-  }
-  if (template.recurrence === "monthly" && template.month_day) {
-    const lastDay = new Date(
-      Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0),
-    ).getUTCDate();
-    return d.getUTCDate() === Math.min(template.month_day, lastDay);
-  }
-  return false;
 }
