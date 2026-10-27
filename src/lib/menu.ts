@@ -32,6 +32,12 @@ const menu: MenuItem[] = [
     icon: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z",
   },
   {
+    href: "/hadiah",
+    label: "rewardsPage",
+    roles: everyone,
+    icon: "M4 11h16v10H4zM2 7h20v4H2zm10 0v14M12 7c-2-4-6-4-6-1s6 1 6 1c0 0 6 2 6-1s-4-3-6 1",
+  },
+  {
     href: "/laporan",
     label: "report",
     roles: everyone,

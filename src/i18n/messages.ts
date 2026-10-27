@@ -246,6 +246,20 @@ const id = {
   noBadges: "Belum ada lencana.",
   badge_streak_7: "Streak 7 hari",
   badge_area_specialist: "Spesialis area",
+  rewardsPage: "Hadiah",
+  addReward: "Tambah hadiah",
+  rewardName: "Nama hadiah",
+  rewardCost: "Harga (poin)",
+  noRewards: "Belum ada hadiah.",
+  hideReward: "Sembunyikan",
+  showReward: "Tampilkan",
+  hiddenReward: "Disembunyikan",
+  redeem: "Tukar",
+  rewardRequests: "Permintaan penukaran",
+  noRewardRequests: "Belum ada permintaan.",
+  request_pending: "Menunggu persetujuan",
+  request_approved: "Disetujui, poin dikurangi",
+  request_rejected: "Ditolak",
 };
 
 const en: typeof id = {
@@ -495,6 +509,20 @@ const en: typeof id = {
   noBadges: "No badges yet.",
   badge_streak_7: "7-day streak",
   badge_area_specialist: "Area specialist",
+  rewardsPage: "Rewards",
+  addReward: "Add reward",
+  rewardName: "Reward name",
+  rewardCost: "Cost (points)",
+  noRewards: "No rewards yet.",
+  hideReward: "Hide",
+  showReward: "Show",
+  hiddenReward: "Hidden",
+  redeem: "Redeem",
+  rewardRequests: "Redeem requests",
+  noRewardRequests: "No requests yet.",
+  request_pending: "Waiting for approval",
+  request_approved: "Approved, points deducted",
+  request_rejected: "Rejected",
 };
 
 export const messages = { id, en };
