@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { DailyMessageCard } from "@/components/daily-message-card";
 import { LanguageSwitch } from "@/components/language-switch";
 import { TodayTasks } from "@/components/today-tasks";
 import { buttonClass } from "@/components/auth-form";
@@ -58,6 +59,7 @@ export default function Home() {
                 {t.greeting}, {active?.displayName ?? family.displayName} ·{" "}
                 {family.familyName}
               </p>
+              <DailyMessageCard />
               <h2 className="self-start text-xl font-bold">{t.today}</h2>
               <TodayTasks
                 me={{
