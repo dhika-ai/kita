@@ -5,17 +5,19 @@ import { useMessages } from "@/i18n/language";
 import { useActiveMember } from "@/lib/active-member";
 import { loadMyFamily, useSession, type MyFamily } from "@/lib/auth";
 import { AccountList, PostList } from "./master-lists";
+import { Transactions } from "./transactions";
 
-const tabs = ["financeAccounts", "budgetPosts"] as const;
+const tabs = ["transactions", "financeAccounts", "budgetPosts"] as const;
 
 // Keuangan (Rilis 5), hanya untuk ayah dan ibu. K-02: rekening dan pos anggaran.
+// K-03: catat pemasukan dan pengeluaran.
 // Disimpan di perangkat lalu tersinkron (F-10), jadi bisa dipakai saat offline.
 export default function FinancePage() {
   const t = useMessages();
   const session = useSession();
   const active = useActiveMember();
   const [me, setMe] = useState<MyFamily | null>();
-  const [tab, setTab] = useState<(typeof tabs)[number]>("financeAccounts");
+  const [tab, setTab] = useState<(typeof tabs)[number]>("transactions");
 
   useEffect(() => {
     if (!session) return;
@@ -45,7 +47,12 @@ export default function FinancePage() {
           </button>
         ))}
       </div>
-      {tab === "financeAccounts" ? (
+      {tab === "transactions" ? (
+        <Transactions
+          familyId={me.familyId}
+          memberId={active?.id ?? me.memberId}
+        />
+      ) : tab === "financeAccounts" ? (
         <AccountList familyId={me.familyId} />
       ) : (
         <PostList familyId={me.familyId} />
