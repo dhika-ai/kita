@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { buttonClass, inputClass } from "@/components/auth-form";
+import {
+  buttonClass,
+  inputClass,
+  secondaryButtonClass,
+} from "@/components/auth-form";
 import { StoragePhoto } from "@/components/storage-photo";
 import { useLanguage, useMessages } from "@/i18n/language";
 import type { Role } from "@/lib/auth";
@@ -170,7 +174,7 @@ function TaskItem({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="shrink-0 rounded-md border px-3 py-1 text-sm"
+            className={`shrink-0 ${buttonClass}`}
           >
             {t.markDone}
           </button>
@@ -180,7 +184,7 @@ function TaskItem({
         <button
           type="button"
           onClick={() => setShowSop(!showSop)}
-          className="w-fit text-sm underline"
+          className="w-fit text-sm text-gray-600 underline"
         >
           {showSop ? t.hideSop : t.showSop}
         </button>
@@ -219,7 +223,7 @@ function TaskItem({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-md border px-4 py-2"
+              className={secondaryButtonClass}
             >
               {t.cancel}
             </button>

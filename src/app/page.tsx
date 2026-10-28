@@ -77,7 +77,7 @@ export default function Home() {
                 setFamily(undefined);
                 supabase.auth.signOut();
               }}
-              className="rounded-md border px-4 py-2"
+              className="text-sm text-gray-500 underline"
             >
               {t.logout}
             </button>
